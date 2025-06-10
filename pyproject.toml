@@ -15,7 +15,7 @@ black = "*"
 ruff = "*"
 
 [tool.poetry.scripts]
-squirrelfocus = "cli:app"
+sf = "cli:app"
 
 [build-system]
 requires = ["poetry-core"]

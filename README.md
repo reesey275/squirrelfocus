@@ -22,7 +22,7 @@ poetry install
 After installing the project you can invoke the CLI directly:
 
 ```bash
-poetry run squirrelfocus hello
+poetry run sf hello
 ```
 
 The default command prints a friendly greeting. Additional subcommands will be
