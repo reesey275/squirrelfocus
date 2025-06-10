@@ -11,15 +11,19 @@ developers stay focused and keep short personal notes during a work session.
 
 ## Installation
 
-Clone the repository and install the dependencies using Poetry:
+Clone the repository and install the dependencies using Poetry. Skipping the
+project package keeps the environment lightweight:
 
 ```bash
-poetry install
+poetry install --no-root
 ```
+
+You can achieve the same behavior permanently by setting
+`package-mode = false` in your Poetry configuration.
 
 ## Running the CLI
 
-After installing the project you can invoke the CLI directly:
+After installing the project you can invoke the CLI using Poetry's `run` command:
 
 ```bash
 poetry run sf hello
