@@ -68,6 +68,7 @@ command:
 ```bash
 poetry run sf hello
 ```
+See [docs/cli_reference.md](docs/cli_reference.md) for command details.
 
 The default command prints a friendly greeting. Use `drop` to store a note and
 `show` to display recent entries. The `ask` command requires an
