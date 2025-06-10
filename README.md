@@ -43,6 +43,18 @@ entry point will work as before:
 poetry run sf hello
 ```
 
+## Configuration
+
+Some commands rely on external services such as the OpenAI API or a Discord
+webhook. Copy `.env.example` to `.env` and supply your credentials before
+running those features. The file includes placeholders for the following
+variables:
+
+```bash
+OPENAI_API_KEY=your-api-key
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/... 
+```
+
 ## Running the CLI
 
 After installing the project you can invoke the CLI using Poetry's `run` command:
