@@ -84,7 +84,7 @@ Common development tasks can be run through Poetry:
 ```bash
 # Format and lint the code
 poetry run black .
-poetry run ruff .
+poetry run ruff check .
 
 # Run the test suite
 poetry run pytest
