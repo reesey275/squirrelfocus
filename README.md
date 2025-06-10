@@ -38,7 +38,7 @@ poetry run black .
 poetry run ruff .
 
 # Run the test suite
-pytest
+poetry run pytest
 ```
 
 ## License

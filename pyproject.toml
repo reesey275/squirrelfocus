@@ -7,12 +7,12 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-typer = "*"
+typer = "^0.12.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "*"
-black = "*"
-ruff = "*"
+pytest = "^8.2.0"
+black = "^24.3.0"
+ruff = "^0.4.0"
 
 [tool.poetry.scripts]
 sf = "cli:app"
