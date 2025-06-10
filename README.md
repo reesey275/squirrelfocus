@@ -8,8 +8,7 @@ developers stay focused and keep short personal notes during a work session.
 
 - Python 3.10 or newer
 - [Poetry](https://python-poetry.org/) for dependency management. The
-  `scripts/setup_poetry.sh` helper will install it automatically if it is
-  missing.
+  `setup.sh` helper will install it automatically if it is missing.
 
 ## Installation
 
@@ -17,7 +16,7 @@ Clone the repository and run the helper script. The script installs Poetry if
 needed and then installs the project dependencies:
 
 ```bash
-./scripts/setup_poetry.sh
+./setup.sh
 ```
 
 After the script completes run a quick greeting to verify the setup:
