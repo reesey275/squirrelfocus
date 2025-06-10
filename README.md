@@ -13,11 +13,17 @@ developers stay focused and keep short personal notes during a work session.
 
 ## Installation
 
-Clone the repository and run the helper script. It installs Poetry if needed
-and then installs the project dependencies:
+Clone the repository and run the helper script. The script installs Poetry if
+needed and then installs the project dependencies:
 
 ```bash
 ./scripts/setup_poetry.sh
+```
+
+After the script completes run a quick greeting to verify the setup:
+
+```bash
+poetry run sf hello
 ```
 
 If you prefer to manage Poetry yourself you can still run `poetry install`
@@ -57,14 +63,20 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 
 ## Running the CLI
 
-After installing the project you can invoke the CLI using Poetry's `run` command:
+After installing the project you can invoke the CLI using Poetry's `run`
+command:
 
 ```bash
 poetry run sf hello
 ```
 
-The default command prints a friendly greeting. Additional subcommands will be
-added over time.
+The default command prints a friendly greeting. Use `drop` to store a note and
+`show` to display recent entries:
+
+```bash
+poetry run sf drop "Fixed a tricky bug"
+poetry run sf show 3
+```
 
 ## Development
 
@@ -81,4 +93,4 @@ poetry run pytest
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT License © 2024. See [LICENSE](LICENSE) for full text.
