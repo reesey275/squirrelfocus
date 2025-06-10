@@ -6,7 +6,10 @@ from pathlib import Path
 import typer
 
 app = typer.Typer(
-    help="SquirrelFocus command line interface. Use 'drop' to add notes and 'show' to view them."
+    help=(
+        "SquirrelFocus command line interface. Use 'drop' to add notes and 'show'"
+        " to view them. Entries are stored in ~/.squirrelfocus/acornlog.txt"
+    )
 )
 
 LOG_DIR = Path.home() / ".squirrelfocus"
@@ -20,7 +23,7 @@ def ensure_log_dir() -> None:
 
 @app.command()
 def drop(text: str) -> None:
-    """Append TEXT with a timestamp to the log file."""
+    """Append TEXT with a timestamp to ~/.squirrelfocus/acornlog.txt."""
     ensure_log_dir()
     timestamp = datetime.now().isoformat()
     with LOG_FILE.open("a", encoding="utf-8") as fh:
@@ -29,7 +32,7 @@ def drop(text: str) -> None:
 
 @app.command()
 def show(count: int = 5) -> None:
-    """Print the last COUNT lines from the log file."""
+    """Print the last COUNT lines from ~/.squirrelfocus/acornlog.txt."""
     ensure_log_dir()
     if not LOG_FILE.exists():
         typer.echo("No log entries found.")
