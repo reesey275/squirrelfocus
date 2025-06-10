@@ -7,12 +7,21 @@ developers stay focused and keep short personal notes during a work session.
 ## Prerequisites
 
 - Python 3.10 or newer
-- [Poetry](https://python-poetry.org/) for dependency management
+- [Poetry](https://python-poetry.org/) for dependency management. The
+  `scripts/setup_poetry.sh` helper will install it automatically if it is
+  missing.
 
 ## Installation
 
-Clone the repository and install the dependencies using Poetry. Skipping the
-project package keeps the environment lightweight:
+Clone the repository and run the helper script. It installs Poetry if needed
+and then installs the project dependencies:
+
+```bash
+./scripts/setup_poetry.sh
+```
+
+If you prefer to manage Poetry yourself you can still run `poetry install`
+manually. Skipping the project package keeps the environment lightweight:
 
 ```bash
 poetry install --no-root
