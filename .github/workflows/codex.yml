@@ -1,0 +1,26 @@
+name: Codex Summary
+
+on:
+  pull_request:
+  issues:
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: |
+          poetry install --no-root
+      - name: Generate summary
+        env:
+          TITLE: >-
+            ${{ github.event.pull_request.title || github.event.issue.title }}
+        run: poetry run sf ask "Summarize: $TITLE" || true
