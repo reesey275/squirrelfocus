@@ -1,4 +1,4 @@
-# Integrations TODO
+# Integrations
 
-- Outline how integrations should send data.
-- Decide on webhook formats.
+See [Webhook Format](../docs/integrations/webhook_format.md) for how
+integrations send data and the expected payload structure.
