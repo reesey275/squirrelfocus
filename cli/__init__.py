@@ -31,7 +31,7 @@ def drop(text: str) -> None:
 
 
 @app.command()
-def show(count: int = 5) -> None:
+def show(count: int = typer.Argument(5)) -> None:
     """Print the last COUNT lines from ~/.squirrelfocus/acornlog.txt."""
     ensure_log_dir()
     if not LOG_FILE.exists():
@@ -46,7 +46,7 @@ def show(count: int = 5) -> None:
 
 
 @app.command()
-def hello(name: str = "world"):
+def hello(name: str = typer.Argument("world")):
     """Say hello to NAME."""
     typer.echo(f"Hello {name}!")
 
