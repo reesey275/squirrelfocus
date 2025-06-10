@@ -36,3 +36,38 @@ def test_show_outputs_recent_entries(tmp_path, monkeypatch):
     assert result.exit_code == 0
     lines = result.output.strip().splitlines()
     assert lines == ["entry2", "entry3"]
+
+
+class DummyCompletions:
+    def create(self, model, messages):
+        class DummyMessage:
+            content = "work item"
+
+        class DummyChoice:
+            message = DummyMessage()
+
+        return type("R", (), {"choices": [DummyChoice()]})
+
+
+class DummyClient:
+    def __init__(self, api_key):
+        self.chat = type("Chat", (), {"completions": DummyCompletions()})()
+
+
+def test_ask_returns_work_item(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "token")
+    monkeypatch.setattr(
+        cli.openai,
+        "OpenAI",
+        lambda api_key: DummyClient(api_key),
+    )
+    result = runner.invoke(cli.app, ["ask", "question"])
+    assert result.exit_code == 0
+    assert "work item" in result.output
+
+
+def test_ask_missing_api_key(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    result = runner.invoke(cli.app, ["ask", "anything"])
+    assert result.exit_code != 0
+    assert "OPENAI_API_KEY not set" in result.output

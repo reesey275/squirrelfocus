@@ -70,11 +70,13 @@ poetry run sf hello
 ```
 
 The default command prints a friendly greeting. Use `drop` to store a note and
-`show` to display recent entries:
+`show` to display recent entries. The `ask` command requires an
+`OPENAI_API_KEY` environment variable and turns a question into a work item:
 
 ```bash
 poetry run sf drop "Fixed a tricky bug"
 poetry run sf show 3
+poetry run sf ask "How do I plan tomorrow?"
 ```
 
 ## Development
