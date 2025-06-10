@@ -38,6 +38,20 @@ def test_show_outputs_recent_entries(tmp_path, monkeypatch):
     assert lines == ["entry2", "entry3"]
 
 
+def test_show_no_log(tmp_path, monkeypatch):
+    setup_tmp_log(tmp_path, monkeypatch)
+    result = runner.invoke(cli.app, ["show", "1"])
+    assert result.exit_code == 0
+    assert "No log entries found." in result.output
+
+
+def test_show_invalid_count(tmp_path, monkeypatch):
+    setup_tmp_log(tmp_path, monkeypatch)
+    result = runner.invoke(cli.app, ["show", "bad"])
+    assert result.exit_code != 0
+    assert "is not a valid integer" in result.output
+
+
 class DummyCompletions:
     def create(self, model, messages):
         class DummyMessage:
@@ -71,3 +85,25 @@ def test_ask_missing_api_key(monkeypatch):
     result = runner.invoke(cli.app, ["ask", "anything"])
     assert result.exit_code != 0
     assert "OPENAI_API_KEY not set" in result.output
+
+
+class ErrorCompletions:
+    def create(self, model, messages):
+        raise RuntimeError("boom")
+
+
+class ErrorClient:
+    def __init__(self, api_key):
+        self.chat = type("Chat", (), {"completions": ErrorCompletions()})()
+
+
+def test_ask_openai_error(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "token")
+    monkeypatch.setattr(
+        cli.openai,
+        "OpenAI",
+        lambda api_key: ErrorClient(api_key),
+    )
+    result = runner.invoke(cli.app, ["ask", "question"])
+    assert result.exit_code != 0
+    assert "OpenAI error: boom" in result.output
