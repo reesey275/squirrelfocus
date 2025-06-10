@@ -19,7 +19,20 @@ poetry install --no-root
 ```
 
 You can achieve the same behavior permanently by setting
-`package-mode = false` in your Poetry configuration.
+`package-mode = false` in your Poetry configuration. When skipping the
+package installation, the `sf` entry point is not available. Invoke the
+CLI module directly instead:
+
+```bash
+poetry run python -m cli hello
+```
+
+If you do install the package (or enable package mode) the original
+entry point will work as before:
+
+```bash
+poetry run sf hello
+```
 
 ## Running the CLI
 
