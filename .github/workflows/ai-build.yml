@@ -9,18 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - uses: actions/setup-python@v5
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           python-version: '3.10'
       - name: Install Poetry
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
       - name: Install dependencies
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           poetry install --no-root
       - name: Run sf ask
         env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           QUESTION: >-
             ${{ github.event.pull_request.title || github.event.issue.title }}
         run: poetry run sf ask "$QUESTION" || true
