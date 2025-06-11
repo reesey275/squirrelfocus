@@ -92,6 +92,11 @@ See the Codex goals document
 [Codex goals](codex/goals/expected_codex_behavior.md)
 for how `sf ask` converts prompts into tasks.
 
+## Additional Documentation
+
+- [Vision](docs/vision.md) outlines the goals and value of the project.
+- [Security Overview](docs/security-overview.md) explains data handling.
+
 ## Development
 
 Common development tasks can be run through Poetry:
