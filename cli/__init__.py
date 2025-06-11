@@ -49,6 +49,10 @@ def show(count: str = typer.Argument("5")) -> None:
         typer.echo("Error: COUNT must be an integer.")
         raise typer.Exit(code=2)
 
+    if count_int <= 0:
+        typer.echo("Error: COUNT must be greater than 0.")
+        raise typer.Exit(code=2)
+
     ensure_log_dir()
     if not LOG_FILE.exists():
         typer.echo("No log entries found.")
