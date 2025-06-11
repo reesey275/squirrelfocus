@@ -17,12 +17,8 @@ app = typer.Typer(
 
 LOG_DIR = Path.home() / ".squirrelfocus"
 LOG_FILE = LOG_DIR / "acornlog.txt"
-PROMPT_FILE = (
-    Path(__file__).resolve().parents[1]
-    / "codex"
-    / "prompts"
-    / "work_item_generator.md"
-)
+_BASE_PATH = Path(__file__).resolve().parents[1]
+PROMPT_FILE = _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
 
 
 def load_prompt() -> str:
@@ -74,7 +70,8 @@ def ask(question: str) -> None:
     ]
     try:
         resp = client.chat.completions.create(
-            model="gpt-3.5-turbo", messages=messages
+            model="gpt-3.5-turbo",
+            messages=messages,
         )
     except Exception as exc:  # pragma: no cover - network issues
         typer.echo(f"OpenAI error: {exc}")
