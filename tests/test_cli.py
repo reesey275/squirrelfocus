@@ -49,7 +49,7 @@ def test_show_invalid_count(tmp_path, monkeypatch):
     setup_tmp_log(tmp_path, monkeypatch)
     result = runner.invoke(cli.app, ["show", "bad"])
     assert result.exit_code != 0
-    assert "is not a valid integer" in result.output
+    assert "COUNT must be an integer" in result.output
 
 
 class DummyCompletions:
