@@ -25,6 +25,9 @@ After the script completes run a quick greeting to verify the setup:
 poetry run sf hello
 ```
 
+If the setup complains about lock-file changes run `poetry lock` and try
+again. See [docs/troubleshooting.md](docs/troubleshooting.md) for details.
+
 If you prefer to manage Poetry yourself you can still run `poetry install`
 manually. Skipping the project package keeps the environment lightweight:
 
