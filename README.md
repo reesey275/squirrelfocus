@@ -85,8 +85,8 @@ poetry run sf ask "How do I plan tomorrow?"
 
 ## Codex Journal
 
-Daily reflections live in [codex/journal](codex/journal). Each entry has a YAML
-header with metadata such as date, tags and a short summary.
+Daily reflections live in [codex/journal](codex/journal). Each entry lists
+metadata such as date, tags and a short summary in a YAML header.
 
 ## Development
 
@@ -100,6 +100,10 @@ poetry run ruff check .
 # Run the test suite
 poetry run pytest
 ```
+
+## Troubleshooting
+
+See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
 
 ## License
 
