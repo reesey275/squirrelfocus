@@ -88,6 +88,10 @@ poetry run sf ask "How do I plan tomorrow?"
 Daily reflections live in [codex/journal](codex/journal). Each entry lists
 metadata such as date, tags and a short summary in a YAML header.
 
+See the Codex goals document
+[Codex goals](codex/goals/expected_codex_behavior.md)
+for how `sf ask` converts prompts into tasks.
+
 ## Development
 
 Common development tasks can be run through Poetry:
