@@ -4,7 +4,7 @@ Track outstanding work across the project.
 
 ## CLI
 
-- Keep CLI documentation current.
+- Document missing command options.
 - Add tests for error cases.
 
 ## Integrations
