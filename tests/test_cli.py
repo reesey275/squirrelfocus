@@ -18,6 +18,12 @@ def test_hello():
     assert "Hello squirrels!" in result.output
 
 
+def test_hello_default():
+    result = runner.invoke(cli.app, ["hello"])
+    assert result.exit_code == 0
+    assert "Hello world!" in result.output
+
+
 def test_drop_creates_entry(tmp_path, monkeypatch):
     _, log_file = setup_tmp_log(tmp_path, monkeypatch)
     result = runner.invoke(cli.app, ["drop", "first note"])
