@@ -57,8 +57,11 @@ variables:
 
 ```bash
 OPENAI_API_KEY=your-api-key
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/... 
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 ```
+
+GitHub Actions use this key as a secret. Add `OPENAI_API_KEY` to the
+repository secrets so the automated workflows can run correctly.
 
 ## Running the CLI
 
