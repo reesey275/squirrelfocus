@@ -9,8 +9,8 @@ import typer
 
 app = typer.Typer(
     help=(
-        "SquirrelFocus command line interface. Use 'drop' to add notes"
-        " and 'show' to view them. "
+        "SquirrelFocus CLI. Use 'drop' to add notes, "
+        "'show' to view them, 'ask' to create tasks. "
         "Entries are stored in ~/.squirrelfocus/acornlog.txt"
     )
 )

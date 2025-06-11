@@ -29,7 +29,8 @@ poetry run sf show 3
 
 ## ask QUESTION
 
-Create a work item from QUESTION using OpenAI. Requires OPENAI_API_KEY.
+Create a work item from QUESTION using OpenAI.
+The CLI help calls 'ask' to create tasks. Requires OPENAI_API_KEY.
 
 ```bash
 poetry run sf ask "How do I plan tomorrow?"
