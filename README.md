@@ -83,6 +83,11 @@ poetry run sf show 3
 poetry run sf ask "How do I plan tomorrow?"
 ```
 
+## Codex Journal
+
+Daily reflections live in [codex/journal](codex/journal). Each entry has a YAML
+header with metadata such as date, tags and a short summary.
+
 ## Development
 
 Common development tasks can be run through Poetry:
