@@ -8,7 +8,7 @@ sessions. Generated tasks must keep each line under 79 characters.
 ```
 Title: <short phrase summarizing the task>
 Description: <single sentence description>
-Type: <bug|feature|chore>
+Type: <task|bug|feature|doc>
 Tags: <comma separated keywords>
 Steps:
   1. <first action>
@@ -27,7 +27,7 @@ Output:
 ```
 Title: Add lint check to CI
 Description: Fail builds when ruff finds issues
-Type: feature
+Type: task
 Tags: ci,lint,automation
 Steps:
   1. Update CI config with ruff command
