@@ -3,3 +3,7 @@ __pycache__/
 .env
 .ruff_cache/
 .pytest_cache/
+# Ignore Potato-related files
+Potato
+Potato.md
+Potato*
