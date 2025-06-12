@@ -138,12 +138,14 @@ class DummyFile:
     def open(self, mode="r", encoding="utf-8"):
         raise OSError("fail")
 
+
 def test_drop_write_error(monkeypatch):
     monkeypatch.setattr(cli, "ensure_log_dir", lambda: None)
     monkeypatch.setattr(cli, "LOG_FILE", DummyFile())
     result = runner.invoke(cli.app, ["drop", "note"])
     assert result.exit_code != 0
     assert isinstance(result.exception, OSError)
+
 
 class ReadFailFile:
     def exists(self):
