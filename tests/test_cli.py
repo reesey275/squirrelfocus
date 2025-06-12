@@ -120,3 +120,28 @@ def test_ask_openai_error(monkeypatch):
     result = runner.invoke(cli.app, ["ask", "question"])
     assert result.exit_code != 0
     assert "OpenAI error: boom" in result.output
+
+
+def test_drop_missing_text():
+    result = runner.invoke(cli.app, ["drop"])
+    assert result.exit_code != 0
+    assert "Missing argument 'TEXT'" in result.output
+
+
+def test_ask_missing_question():
+    result = runner.invoke(cli.app, ["ask"])
+    assert result.exit_code != 0
+    assert "Missing argument 'QUESTION'" in result.output
+
+
+class DummyFile:
+    def open(self, mode="r", encoding="utf-8"):
+        raise OSError("fail")
+
+def test_drop_write_error(monkeypatch):
+    monkeypatch.setattr(cli, "ensure_log_dir", lambda: None)
+    monkeypatch.setattr(cli, "LOG_FILE", DummyFile())
+    result = runner.invoke(cli.app, ["drop", "note"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, OSError)
+
