@@ -119,4 +119,4 @@ See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
 
 ## License
 
-MIT License © 2024. See [LICENSE](LICENSE) for full text.
+MIT License © 2024–2025. See [LICENSE](LICENSE) for full text.
