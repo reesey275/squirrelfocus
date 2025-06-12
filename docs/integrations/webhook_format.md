@@ -56,6 +56,33 @@ A Slack message could send the channel and user id:
 }
 ```
 
+Another possible payload from a Trello board:
+
+```json
+{
+  "source": "trello",
+  "event": "card_created",
+  "payload": {
+    "board": "Roadmap",
+    "card_id": "abcd1234",
+    "name": "Add OAuth support"
+  }
+}
+```
+
+A monitoring alert might look like:
+
+```json
+{
+  "source": "monitor",
+  "event": "alert",
+  "payload": {
+    "severity": "critical",
+    "description": "Disk space low"
+  }
+}
+```
+
 ### Optional fields
 
 Integrations often supply extra metadata such as:
@@ -71,4 +98,6 @@ These fields are not required but may help trace or validate events.
 Senders are encouraged to include a secret token or signature header with each
 request. The server verifies this value to ensure the payload originates from
 a trusted source. Rotate credentials periodically and use HTTPS to protect
-traffic.
+traffic. Verify the `signature` field using HMAC and reject mismatched values.
+Store secrets in environment variables and restrict file permissions. For
+additional safety, maintain an IP allow list for known webhook senders.
