@@ -3,6 +3,14 @@
 This page lists the commands and options provided by the `sf` tool.
 Run `sf COMMAND --help` for additional details.
 
+## Global options
+
+The CLI offers a few flags in addition to its subcommands:
+
+- `--install-completion` installs shell completion for the current shell.
+- `--show-completion` prints the completion script to standard output.
+- `--help` displays usage information for the selected command.
+
 ## hello [NAME]
 
 Print a friendly greeting. `NAME` defaults to `"world"`.

@@ -76,6 +76,9 @@ poetry run sf hello
 ```
 See [docs/cli_reference.md](docs/cli_reference.md) for command details.
 
+Shell completions are available with `--install-completion` and can be
+inspected with `--show-completion`.
+
 The default command prints a friendly greeting. Use `drop` to store a note and
 `show` to display recent entries. The `ask` command requires an
 `OPENAI_API_KEY` environment variable and turns a question into a work item:
