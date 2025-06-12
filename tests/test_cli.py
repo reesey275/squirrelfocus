@@ -145,3 +145,40 @@ def test_drop_write_error(monkeypatch):
     assert result.exit_code != 0
     assert isinstance(result.exception, OSError)
 
+class ReadFailFile:
+    def exists(self):
+        return True
+
+    def open(self, mode="r", encoding="utf-8"):
+        raise OSError("fail")
+
+
+def test_show_read_error(monkeypatch):
+    monkeypatch.setattr(cli, "ensure_log_dir", lambda: None)
+    monkeypatch.setattr(cli, "LOG_FILE", ReadFailFile())
+    result = runner.invoke(cli.app, ["show", "1"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, OSError)
+
+
+def test_drop_log_dir_error(monkeypatch):
+    def raiser():
+        raise OSError("fail")
+
+    monkeypatch.setattr(cli, "ensure_log_dir", raiser)
+    result = runner.invoke(cli.app, ["drop", "note"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, OSError)
+
+
+def test_ask_prompt_missing_file(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPENAI_API_KEY", "token")
+    monkeypatch.setattr(
+        cli.openai,
+        "OpenAI",
+        lambda api_key: DummyClient(api_key),
+    )
+    monkeypatch.setattr(cli, "PROMPT_FILE", tmp_path / "missing")
+    result = runner.invoke(cli.app, ["ask", "hi"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, FileNotFoundError)
