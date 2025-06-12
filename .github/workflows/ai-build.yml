@@ -32,4 +32,4 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           QUESTION: >-
             ${{ github.event.pull_request.title || github.event.issue.title }}
-        run: poetry run sf ask "$QUESTION" || true
+        run: "poetry run sf ask \"$QUESTION\" || true"
