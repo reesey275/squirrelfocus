@@ -1,5 +1,8 @@
 # SquirrelFocus
 
+[![CI][ci-badge]][ci-url]
+[![CI Summary][ci-summary-badge]][ci-summary-url]
+
 Developer productivity and reflection toolkit. The goal of this project is to
 provide a minimal command line interface and supporting documents that help
 developers stay focused and keep short personal notes during a work session.
@@ -155,3 +158,9 @@ See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
 ## License
 
 MIT License © 2024–2025. See [LICENSE](LICENSE) for full text.
+
+[ci-badge]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml/badge.svg?branch=main
+[ci-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml?query=branch%3Amain
+[ci-summary-badge]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml/badge.svg?branch=main
+[ci-summary-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml?query=branch%3Amain
+
