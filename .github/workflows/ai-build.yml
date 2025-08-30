@@ -22,11 +22,18 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
-      - name: Install dependencies
+      - name: Sync lockfile if stale
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          poetry install --no-root
+          set -euxo pipefail
+          poetry --version
+          poetry lock --no-interaction --no-update \
+            || poetry lock --no-interaction
+      - name: Install dependencies
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: poetry install --no-root --no-interaction
       - name: Run sf ask
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

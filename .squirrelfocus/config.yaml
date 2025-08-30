@@ -1,0 +1,10 @@
+journals_dir: journal_logs
+entry_glob: '**/*.md'
+prefer_frontmatter: true
+trailer_keys: [fix, why, change, proof, ref]
+summary_format: |
+  ### CI Triage
+  - **Fix:** {{fix}}
+  - **Why:** {{why}}
+  - **Change:** {{change}}
+  - **Proof:** {{proof}}
