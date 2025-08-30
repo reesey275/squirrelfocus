@@ -15,6 +15,8 @@ Release branches target `main`. Commits use a commit-msg hook to append
 SquirrelFocus trailers, enabling workflows to summarize the latest
 `journal_logs` entry. CI runs on pushes and pull requests for `development`
 and `main`, and merging to `main` appends a line to `MILESTONE_LOG.md`.
+The `main` and `development` branches are protected. Merges require pull
+requests and passing checks.
 Run `bash scripts/install_hooks.sh` to install the hook on Unix-like
 systems. Windows users can run `pwsh scripts/install_hooks.ps1` to set up
 the hook.
