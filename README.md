@@ -128,6 +128,21 @@ poetry run ruff check .
 poetry run pytest
 ```
 
+## Reusable CI Summary
+
+Use the reusable workflow to generate summaries in other workflows:
+
+```yaml
+jobs:
+  summarize:
+    uses: ./.github/workflows/sf-summary.yml
+    with:
+      title: "Example title"
+    secrets: inherit
+```
+
+The job accepts a `title` describing the context for the summary.
+
 ## Troubleshooting
 
 See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
