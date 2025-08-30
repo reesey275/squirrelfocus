@@ -85,6 +85,13 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: poetry install --no-root --no-interaction
+      - name: Check click and typer versions
+        if: steps.poetry.outputs.poetry_available == '1'
+        run: |
+          poetry run python - <<'PY'
+          import click, typer
+          print(click.__version__, typer.__version__)
+          PY
       - name: Generate summary
         if: steps.poetry.outputs.poetry_available == '1'
         env:
