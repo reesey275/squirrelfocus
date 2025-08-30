@@ -2,7 +2,9 @@ name: Codex Summary
 
 on:
   pull_request:
+    branches: [main, development]
   issues:
+    types: [opened, edited, reopened]
 
 jobs:
   summarize:
