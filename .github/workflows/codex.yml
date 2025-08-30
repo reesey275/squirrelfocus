@@ -2,6 +2,7 @@ name: Codex Summary
 
 on:
   pull_request:
+    branches: [main, development]
   issues:
 
 jobs:

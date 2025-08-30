@@ -2,10 +2,12 @@ Target:
  - feature/fix → development
  - release → main
 
-### What changed
+### Summary
 
 ### Why
 
 ### Proof
+
+<!-- Link related journal entry when available -->
 
 ### Fix trailers (auto-appended in commits)
