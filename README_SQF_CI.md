@@ -17,3 +17,8 @@ git add -A && git commit -m "fix: example change" && git push
 journal entry.
 `merge-log.yml` (optional) appends a single-line record to
 `MILESTONE_LOG.md` on pushes to main.
+
+## Rollback
+
+Remove `.github/workflows/ci-summary.yml` to stop posting summaries.
+Delete `.git/hooks/commit-msg` to disable auto trailer insertion.
