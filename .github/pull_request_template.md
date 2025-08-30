@@ -1,3 +1,7 @@
+Target:
+ - feature/fix → development
+ - release → main
+
 ### What changed
 
 ### Why

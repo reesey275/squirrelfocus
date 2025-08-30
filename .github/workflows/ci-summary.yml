@@ -1,5 +1,9 @@
 name: CI Summary from Trailers
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
 permissions:
   contents: read
   actions: read
