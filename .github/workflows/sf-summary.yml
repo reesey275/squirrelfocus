@@ -1,25 +1,23 @@
-name: CI
+name: SquirrelFocus Summary
 
 on:
-  push:
-    branches: [main, development]
-    paths-ignore:
-      - 'MILESTONE_LOG.md'
-      - 'README_SQF_CI.md'
-  pull_request:
-    branches: [main, development]
-
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      title:
+        required: true
+        type: string
 
 jobs:
-  test:
+  summarize:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - uses: actions/setup-python@v5
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           python-version: '3.12'
 
@@ -37,6 +35,7 @@ jobs:
         id: poetry
         shell: bash
         env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           POETRY_VERSION: "1.8.3"
         run: |
           set -euo pipefail
@@ -79,16 +78,19 @@ jobs:
               | tee -a "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Poetry lock
+      - name: Sync lockfile if stale
         if: steps.poetry.outputs.poetry_available == '1'
-        shell: bash
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          set -euo pipefail
+          set -euxo pipefail
           poetry --version
           poetry lock --no-interaction
 
       - name: Install dependencies
         if: steps.poetry.outputs.poetry_available == '1'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: poetry install --no-root --no-interaction
 
       - name: Check click and typer versions
@@ -99,19 +101,18 @@ jobs:
           print(click.__version__, typer.__version__)
           PY
 
-      - name: Run linters
+      - name: Generate summary
         if: steps.poetry.outputs.poetry_available == '1'
-        run: |
-          poetry run ruff check .
-          poetry run black --check .
-
-      - name: Run tests
-        if: steps.poetry.outputs.poetry_available == '1'
-        run: poetry run pytest -q
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TITLE: ${{ inputs.title }}
+        run: "poetry run sf ask \"Summarize: $TITLE\" || true"
 
       - name: Fallback without Poetry (non-fatal)
         if: steps.poetry.outputs.poetry_available != '1'
         continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         shell: bash
         run: |
           set -euo pipefail

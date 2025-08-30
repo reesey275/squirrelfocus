@@ -1,8 +1,28 @@
 # SquirrelFocus
 
+[![CI][ci-badge]][ci-url]
+[![CI Summary][ci-summary-badge]][ci-summary-url]
+
 Developer productivity and reflection toolkit. The goal of this project is to
 provide a minimal command line interface and supporting documents that help
 developers stay focused and keep short personal notes during a work session.
+
+## Workflow
+
+Workflow: feature → development → main (release, tag).
+
+## Branching and CI
+
+All work starts on short-lived feature branches that merge into `development`.
+Release branches target `main`. Commits use a commit-msg hook to append
+SquirrelFocus trailers, enabling workflows to summarize the latest
+`journal_logs` entry. CI runs on pushes and pull requests for `development`
+and `main`, and merging to `main` appends a line to `MILESTONE_LOG.md`.
+The `main` and `development` branches are protected. Merges require pull
+requests and passing checks.
+Run `bash scripts/install_hooks.sh` to install the hook on Unix-like
+systems. Windows users can run `pwsh scripts/install_hooks.ps1` to set up
+the hook.
 
 ## Prerequisites
 
@@ -116,6 +136,21 @@ poetry run ruff check .
 poetry run pytest
 ```
 
+## Reusable CI Summary
+
+Use the reusable workflow to generate summaries in other workflows:
+
+```yaml
+jobs:
+  summarize:
+    uses: ./.github/workflows/sf-summary.yml
+    with:
+      title: "Example title"
+    secrets: inherit
+```
+
+The job accepts a `title` describing the context for the summary.
+
 ## Troubleshooting
 
 See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
@@ -123,3 +158,9 @@ See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
 ## License
 
 MIT License © 2024–2025. See [LICENSE](LICENSE) for full text.
+
+[ci-badge]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml/badge.svg?branch=main
+[ci-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml?query=branch%3Amain
+[ci-summary-badge]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml/badge.svg?branch=main
+[ci-summary-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml?query=branch%3Amain
+
