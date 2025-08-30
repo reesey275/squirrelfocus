@@ -4,6 +4,10 @@ Developer productivity and reflection toolkit. The goal of this project is to
 provide a minimal command line interface and supporting documents that help
 developers stay focused and keep short personal notes during a work session.
 
+## Workflow
+
+Workflow: feature → development → main (release, tag).
+
 ## Prerequisites
 
 - Python 3.10 or newer
