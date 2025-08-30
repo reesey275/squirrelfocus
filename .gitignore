@@ -3,3 +3,6 @@ __pycache__/
 .env
 .ruff_cache/
 .pytest_cache/
+# SquirrelFocus artifacts
+journal_logs/
+.git/hooks/commit-msg

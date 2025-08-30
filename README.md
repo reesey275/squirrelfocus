@@ -8,6 +8,14 @@ developers stay focused and keep short personal notes during a work session.
 
 Workflow: feature → development → main (release, tag).
 
+## Branching and CI
+
+All work starts on short-lived feature branches that merge into `development`.
+Release branches target `main`. Commits use a commit-msg hook to append
+SquirrelFocus trailers, enabling workflows to summarize the latest
+`journal_logs` entry. CI runs on pushes and pull requests for `development`
+and `main`, and merging to `main` appends a line to `MILESTONE_LOG.md`.
+
 ## Prerequisites
 
 - Python 3.10 or newer
