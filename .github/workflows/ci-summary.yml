@@ -1,0 +1,22 @@
+name: CI Summary from Trailers
+on: [push, pull_request]
+permissions:
+  contents: read
+  actions: read
+  checks: write
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Emit CI Summary
+        run: |
+          python3 scripts/sqf_emit.py summary > summary.md || true
+          if [ -s summary.md ]; then
+            cat summary.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No summary available" >> $GITHUB_STEP_SUMMARY
+          fi
