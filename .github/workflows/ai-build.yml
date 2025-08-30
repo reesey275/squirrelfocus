@@ -1,9 +1,12 @@
 name: AI Build
 
 on:
+  push:
+    branches: [main, development]
   pull_request:
     branches: [main, development]
   issues:
+    types: [opened, edited, reopened]
 
 jobs:
   automate:

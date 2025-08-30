@@ -2,23 +2,25 @@ name: Release Publish
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    tags: ["v*"]
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.12"
       - name: Install Poetry
-        uses: abatilo/actions-poetry@v2
-      - name: Build and publish
+        run: pip install poetry==1.8.3
+      - name: Install dependencies
+        run: poetry install --no-root --no-interaction
+      - name: Build
+        run: poetry build
+      - name: Publish to PyPI
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          poetry install --no-root
-          poetry build
+          poetry config pypi-token.pypi "$PYPI_API_TOKEN"
           poetry publish --no-interaction
