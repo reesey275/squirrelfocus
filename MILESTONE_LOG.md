@@ -1,0 +1,1 @@
+- 2025-08-30 — fix: ci/sentinel – stabilize network probe;why: raw.githubusercontent.com intermittent block;change: add curl backoff + offline Vale cache;proof: artifacts/sentinel-artifacts/logs/network.txt;ref: run:local-smoke;

@@ -11,11 +11,13 @@ jobs:
       - uses: actions/checkout@v4
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
       - uses: actions/setup-python@v5
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           python-version: '3.12'
+
       - name: Cache pipx & Poetry
         uses: actions/cache@v4
         with:
@@ -25,6 +27,7 @@ jobs:
             ~/.local/bin
             ~/.cache/pypoetry
           key: pipx-${{ runner.os }}-poetry-1.8.3
+
       - name: Install Poetry (robust, no curl | python)
         id: poetry
         shell: bash
@@ -71,6 +74,7 @@ jobs:
             printf 'Poetry not available after install attempts.\n' \
               | tee -a "$GITHUB_STEP_SUMMARY"
           fi
+
       - name: Sync lockfile if stale
         if: steps.poetry.outputs.poetry_available == '1'
         env:
@@ -78,13 +82,14 @@ jobs:
         run: |
           set -euxo pipefail
           poetry --version
-          poetry lock --no-interaction --no-update \
-            || poetry lock --no-interaction
+          poetry lock --no-interaction
+
       - name: Install dependencies
         if: steps.poetry.outputs.poetry_available == '1'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: poetry install --no-root --no-interaction
+
       - name: Check click and typer versions
         if: steps.poetry.outputs.poetry_available == '1'
         run: |
@@ -92,6 +97,7 @@ jobs:
           import click, typer
           print(click.__version__, typer.__version__)
           PY
+
       - name: Run sf ask
         if: steps.poetry.outputs.poetry_available == '1'
         env:
@@ -99,6 +105,7 @@ jobs:
           QUESTION: >-
             ${{ github.event.pull_request.title || github.event.issue.title }}
         run: "poetry run sf ask \"$QUESTION\" || true"
+
       - name: Fallback without Poetry (non-fatal)
         if: steps.poetry.outputs.poetry_available != '1'
         continue-on-error: true
