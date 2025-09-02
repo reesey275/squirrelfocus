@@ -9,6 +9,7 @@ on:
 jobs:
   summarize:
     uses: ./.github/workflows/sf-summary.yml
+    timeout-minutes: 15
     with:
       title: >-
         ${{ github.event.pull_request.title || github.event.issue.title }}
