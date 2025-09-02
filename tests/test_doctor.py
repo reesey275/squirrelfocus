@@ -26,6 +26,16 @@ def test_doctor_missing_config():
         assert result.exit_code == 1
 
 
+def test_doctor_missing_hook():
+    with runner.isolated_filesystem():
+        make_basic_files()
+        Path(".git/hooks/commit-msg").unlink()
+        result = runner.invoke(cli.app, ["doctor"])
+        assert result.exit_code == 1
+        assert "scripts/install_hooks.sh" in result.output
+        assert "scripts/install_hooks.ps1" in result.output
+
+
 def test_doctor_ok():
     with runner.isolated_filesystem():
         make_basic_files()

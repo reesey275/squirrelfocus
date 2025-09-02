@@ -81,7 +81,9 @@ def init(
         False, "--with-workflows", help="Copy CI summary workflow."
     ),
     with_hook: bool = typer.Option(
-        False, "--with-hook", help="Install commit hook."
+        False,
+        "--with-hook",
+        help="Install commit hook (.sh on Unix, .ps1 on Windows).",
     ),
     force: bool = typer.Option(
         False, "--force", help="Overwrite existing files."
@@ -93,9 +95,10 @@ def init(
     """Guided setup.
 
     Options:
-      --with-workflows  Copy CI workflow.
-      --with-hook       Run scripts/install_hooks.sh.
-      --force           Allow overwrites.
+      --with-workflows    Copy CI workflow.
+      --with-hook         Run install_hooks.sh (Unix) or install_hooks.ps1
+                          (Windows).
+      --force             Allow overwrites.
       --journals-dir TEXT  Journal directory name.
     """
     created: list[Path] = []
@@ -143,8 +146,22 @@ def init(
             shutil.copy(wf_src, wf_dst)
             created.append(wf_dst)
 
-    if with_hook and Path("scripts/install_hooks.sh").exists():
-        subprocess.run(["bash", "scripts/install_hooks.sh"], check=False)
+    if with_hook:
+        sh_hook = Path("scripts/install_hooks.sh")
+        ps1_hook = Path("scripts/install_hooks.ps1")
+        if sh_hook.exists():
+            subprocess.run(["bash", str(sh_hook)], check=False)
+        elif ps1_hook.exists() and sys.platform.startswith("win"):
+            subprocess.run(
+                [
+                    "powershell",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(ps1_hook),
+                ],
+                check=False,
+            )
 
     for path in created:
         typer.echo(f"created {path}")
@@ -262,7 +279,8 @@ def doctor() -> None:
         typer.echo("commit hook: ok")
     else:
         typer.echo(
-            "commit hook: missing (run scripts/install_hooks.sh or ps1)"
+            "commit hook: missing (run 'scripts/install_hooks.sh' on Unix or "
+            "'scripts/install_hooks.ps1' on Windows)"
         )
         fail = True
     raise typer.Exit(code=1 if fail else 0)

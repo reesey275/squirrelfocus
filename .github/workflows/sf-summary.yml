@@ -8,6 +8,6 @@ on:
         type: string
 jobs:
   summarize:
-    uses: ./.github/workflows/codex-summary.yml
+    uses: ./.github/workflows/ci-summary.yml
     with: {}
     secrets: inherit
