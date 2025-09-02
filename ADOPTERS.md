@@ -3,7 +3,7 @@
 Projects adopting SquirrelFocus should copy these files and directories:
 
 - `.squirrelfocus/config.yaml`
-- `scripts/*`
+- `scripts/*` (Unix and Windows hooks)
 - `templates/*`
 
 To use the reusable summary workflow, reference `sf-summary.yml`:
