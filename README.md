@@ -159,8 +159,8 @@ See [docs/troubleshooting.md](docs/troubleshooting.md) for common errors.
 
 MIT License © 2024–2025. See [LICENSE](LICENSE) for full text.
 
-[ci-badge]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml/badge.svg?branch=work
+[ci-badge]: https://img.shields.io/badge/CI-main-blue
 [ci-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml?query=branch%3Awork
-[ci-summary-badge]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml/badge.svg?branch=work
+[ci-summary-badge]: https://img.shields.io/badge/CI_summary-main-blue
 [ci-summary-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml?query=branch%3Awork
 
