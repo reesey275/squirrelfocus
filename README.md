@@ -71,6 +71,21 @@ entry point will work as before:
 poetry run sf hello
 ```
 
+## Quick Start (CLI)
+
+```bash
+poetry run sf init --with-hook --with-workflows
+poetry run sf new --fix "parser bug"
+poetry run sf preview
+poetry run sf doctor
+```
+
+Windows users can install the commit hook:
+
+```powershell
+pwsh scripts/install_hooks.ps1
+```
+
 ## Configuration
 
 Some commands rely on external services such as the OpenAI API or a Discord
