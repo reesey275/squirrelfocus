@@ -12,6 +12,22 @@ def setup_tmp_log(tmp_path, monkeypatch):
     return log_dir, log_file
 
 
+def test_sf_help_shows_usage():
+    result = runner.invoke(cli.app, ["--help"], prog_name="sf")
+    assert result.exit_code == 0
+    assert "SquirrelFocus CLI" in result.output
+
+
+def test_install_completion_creates_script(tmp_path, monkeypatch):
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("SHELL", "/bin/bash")
+    result = runner.invoke(cli.app, ["--install-completion"], prog_name="sf")
+    assert result.exit_code == 0
+    assert "completion installed" in result.output.lower()
+    script = tmp_path / ".bash_completions" / "sf.sh"
+    assert script.exists()
+
+
 def test_hello():
     result = runner.invoke(cli.app, ["hello", "squirrels"])
     assert result.exit_code == 0
@@ -55,14 +71,14 @@ def test_show_invalid_count(tmp_path, monkeypatch):
     setup_tmp_log(tmp_path, monkeypatch)
     result = runner.invoke(cli.app, ["show", "bad"])
     assert result.exit_code != 0
-    assert "COUNT must be an integer" in result.output
+    assert "Invalid value for '[COUNT]'" in result.output
 
 
 def test_show_non_positive_count(tmp_path, monkeypatch):
     setup_tmp_log(tmp_path, monkeypatch)
     result = runner.invoke(cli.app, ["show", "0"])
     assert result.exit_code != 0
-    assert "greater than 0" in result.output
+    assert "range x>=1" in result.output
 
 
 class DummyCompletions:

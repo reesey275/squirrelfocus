@@ -296,18 +296,12 @@ def drop(text: str) -> None:
 
 
 @app.command()
-def show(count: str = typer.Argument("5")) -> None:
+def show(
+    count: int = typer.Argument(
+        5, min=1, help="Number of log lines to display"
+    )
+) -> None:
     """Print the last COUNT lines from ~/.squirrelfocus/acornlog.txt."""
-    try:
-        count_int = int(count)
-    except ValueError:
-        typer.echo("Error: COUNT must be an integer.")
-        raise typer.Exit(code=2)
-
-    if count_int <= 0:
-        typer.echo("Error: COUNT must be greater than 0.")
-        raise typer.Exit(code=2)
-
     ensure_log_dir()
     if not LOG_FILE.exists():
         typer.echo("No log entries found.")
@@ -316,7 +310,7 @@ def show(count: str = typer.Argument("5")) -> None:
     with LOG_FILE.open("r", encoding="utf-8") as fh:
         lines = fh.readlines()
 
-    for line in lines[-count_int:]:
+    for line in lines[-count:]:
         typer.echo(line.rstrip())
 
 

@@ -1,4 +1,5 @@
 name: SquirrelFocus Summary
+
 on:
   workflow_call:
     inputs:
@@ -6,8 +7,20 @@ on:
         description: "Title to summarize"
         required: true
         type: string
+    secrets:
+      OPENAI_API_KEY:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sf-summary-${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: false
+
 jobs:
   summarize:
     uses: ./.github/workflows/ci-summary.yml
-    with: {}
+    with:
+      title: ${{ inputs.title }}
     secrets: inherit
