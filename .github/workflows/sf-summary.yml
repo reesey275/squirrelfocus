@@ -10,6 +10,7 @@ on:
 jobs:
   summarize:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         env:
@@ -32,6 +33,7 @@ jobs:
           key: pipx-${{ runner.os }}-poetry-1.8.3
 
       - name: Install Poetry (robust, no curl | python)
+        timeout-minutes: 15
         id: poetry
         shell: bash
         env:
@@ -80,6 +82,7 @@ jobs:
 
       - name: Sync lockfile if stale
         if: steps.poetry.outputs.poetry_available == '1'
+        timeout-minutes: 15
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -89,12 +92,14 @@ jobs:
 
       - name: Install dependencies
         if: steps.poetry.outputs.poetry_available == '1'
+        timeout-minutes: 15
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: poetry install --no-root --no-interaction
 
       - name: Check click and typer versions
         if: steps.poetry.outputs.poetry_available == '1'
+        timeout-minutes: 15
         run: |
           poetry run python - <<'PY'
           import click, typer
@@ -103,6 +108,7 @@ jobs:
 
       - name: Generate summary
         if: steps.poetry.outputs.poetry_available == '1'
+        timeout-minutes: 15
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TITLE: ${{ inputs.title }}
@@ -110,6 +116,7 @@ jobs:
 
       - name: Fallback without Poetry (non-fatal)
         if: steps.poetry.outputs.poetry_available != '1'
+        timeout-minutes: 15
         continue-on-error: true
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

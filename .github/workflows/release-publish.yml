@@ -7,20 +7,25 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Install Poetry
+        timeout-minutes: 15
         run: pip install poetry==1.8.3
       - name: Install dependencies
+        timeout-minutes: 15
         run: poetry install --no-root --no-interaction
       - name: Build
+        timeout-minutes: 15
         run: poetry build
       - name: Publish to PyPI
         env:
           PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        timeout-minutes: 15
         run: |
           poetry config pypi-token.pypi "$PYPI_API_TOKEN"
           poetry publish --no-interaction
