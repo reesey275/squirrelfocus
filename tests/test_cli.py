@@ -21,9 +21,7 @@ def test_sf_help_shows_usage():
 def test_install_completion_creates_script(tmp_path, monkeypatch):
     monkeypatch.setenv("HOME", str(tmp_path))
     monkeypatch.setenv("SHELL", "/bin/bash")
-    result = runner.invoke(
-        cli.app, ["--install-completion"], prog_name="sf"
-    )
+    result = runner.invoke(cli.app, ["--install-completion"], prog_name="sf")
     assert result.exit_code == 0
     assert "completion installed" in result.output.lower()
     script = tmp_path / ".bash_completions" / "sf.sh"
