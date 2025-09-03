@@ -55,14 +55,14 @@ def test_show_invalid_count(tmp_path, monkeypatch):
     setup_tmp_log(tmp_path, monkeypatch)
     result = runner.invoke(cli.app, ["show", "bad"])
     assert result.exit_code != 0
-    assert "COUNT must be an integer" in result.output
+    assert "Invalid value for '[COUNT]'" in result.output
 
 
 def test_show_non_positive_count(tmp_path, monkeypatch):
     setup_tmp_log(tmp_path, monkeypatch)
     result = runner.invoke(cli.app, ["show", "0"])
     assert result.exit_code != 0
-    assert "greater than 0" in result.output
+    assert "range x>=1" in result.output
 
 
 class DummyCompletions:
