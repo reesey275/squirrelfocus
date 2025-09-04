@@ -339,7 +339,7 @@ def report(
     jdir = Path(cfg.get("journals_dir", "journal_logs"))
     if not jdir.exists():
         typer.echo("No entries found.")
-        raise typer.Exit()
+        raise typer.Exit(code=1)
     cutoff = datetime.now().date() - timedelta(days=since)
     entries: list[tuple[datetime, str, dict]] = []
     for path in sorted(jdir.glob("**/*.md")):
@@ -358,7 +358,7 @@ def report(
         entries.append((dt, title, trailers))
     if not entries:
         typer.echo("No entries found.")
-        raise typer.Exit()
+        raise typer.Exit(code=1)
     lines: list[str] = []
     for dt, title, trailers in sorted(entries):
         header = f"{dt} {title}"

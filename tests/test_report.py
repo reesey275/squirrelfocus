@@ -89,7 +89,7 @@ def test_report_missing_journal_dir(monkeypatch):
         )
         monkeypatch.setattr(cli, "datetime", FixedDate)
         res = runner.invoke(cli.app, ["report"])
-        assert res.exit_code == 0
+        assert res.exit_code == 1
         assert "No entries found." in res.output
 
 
@@ -102,6 +102,6 @@ def test_report_empty_journal_dir(monkeypatch):
         Path("journal_logs").mkdir()
         monkeypatch.setattr(cli, "datetime", FixedDate)
         res = runner.invoke(cli.app, ["report"])
-        assert res.exit_code == 0
+        assert res.exit_code == 1
         assert "No entries found." in res.output
 
