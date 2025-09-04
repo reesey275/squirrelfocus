@@ -200,3 +200,27 @@ def test_ask_prompt_missing_file(monkeypatch, tmp_path):
     result = runner.invoke(cli.app, ["ask", "hi"])
     assert result.exit_code != 0
     assert isinstance(result.exception, FileNotFoundError)
+
+
+def test_add_help():
+    result = runner.invoke(cli.app, ["add", "--help"])
+    assert result.exit_code == 0
+    assert "sum of A and B" in result.output
+
+
+def test_add_missing_argument():
+    result = runner.invoke(cli.app, ["add", "1"])
+    assert result.exit_code != 0
+    assert "Missing argument 'B'" in result.output
+
+
+def test_divide_by_zero():
+    result = runner.invoke(cli.app, ["divide", "1", "0"])
+    assert result.exit_code != 0
+    assert "Cannot divide by zero." in result.output
+
+
+def test_multiply_help():
+    result = runner.invoke(cli.app, ["multiply", "--help"])
+    assert result.exit_code == 0
+    assert "product of A and B" in result.output

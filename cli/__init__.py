@@ -340,6 +340,33 @@ def ask(question: str) -> None:
 
 
 @app.command()
+def add(a: float, b: float) -> None:
+    """Print the sum of A and B."""
+    typer.echo(a + b)
+
+
+@app.command()
+def subtract(a: float, b: float) -> None:
+    """Print the result of A minus B."""
+    typer.echo(a - b)
+
+
+@app.command()
+def multiply(a: float, b: float) -> None:
+    """Print the product of A and B."""
+    typer.echo(a * b)
+
+
+@app.command()
+def divide(a: float, b: float) -> None:
+    """Print the result of A divided by B."""
+    if b == 0:
+        typer.echo("Cannot divide by zero.")
+        raise typer.Exit(code=1)
+    typer.echo(a / b)
+
+
+@app.command()
 def hello(name: str = typer.Argument("world")):
     """Say hello to NAME."""
     typer.echo(f"Hello {name}!")
