@@ -49,3 +49,37 @@ Set the `OPENAI_API_KEY` environment variable first.
 poetry run sf ask "How do I plan tomorrow?"
 OPENAI_API_KEY= poetry run sf ask "anything"  # prints an error
 ```
+
+## add A B
+
+Print the sum of `A` and `B`.
+
+```bash
+poetry run sf add 2 3
+poetry run sf add 1 2.5
+```
+
+## subtract A B
+
+Print the result of `A - B`.
+
+```bash
+poetry run sf subtract 5 2
+```
+
+## multiply A B
+
+Print the product of `A` and `B`.
+
+```bash
+poetry run sf multiply 3 4
+```
+
+## divide A B
+
+Print the result of `A / B`. Fails if `B` is `0`.
+
+```bash
+poetry run sf divide 6 3
+poetry run sf divide 1 0  # prints an error
+```
