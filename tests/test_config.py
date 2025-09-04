@@ -1,0 +1,42 @@
+from pathlib import Path
+from typer.testing import CliRunner
+import cli
+
+runner = CliRunner()
+
+def _write(text: str) -> None:
+    Path('.squirrelfocus').mkdir()
+    Path('.squirrelfocus/config.yaml').write_text(text)
+
+def test_valid_config_allows_run():
+    with runner.isolated_filesystem():
+        _write(
+            'journals_dir: logs\n'
+            'trailer_keys: [fix, why]\n'
+            "summary_format: 'x'\n"
+        )
+        result = runner.invoke(cli.app, ['hello'])
+        assert result.exit_code == 0
+
+def test_missing_key_shows_example():
+    with runner.isolated_filesystem():
+        _write(
+            'trailer_keys: [fix]\n'
+            "summary_format: 'x'\n"
+        )
+        result = runner.invoke(cli.app, ['hello'])
+        assert result.exit_code != 0
+        assert 'journals_dir' in result.output
+        assert 'journals_dir: journal_logs' in result.output
+
+def test_malformed_key_shows_example():
+    with runner.isolated_filesystem():
+        _write(
+            'journals_dir: logs\n'
+            'trailer_keys: bad\n'
+            "summary_format: 'x'\n"
+        )
+        result = runner.invoke(cli.app, ['hello'])
+        assert result.exit_code != 0
+        assert 'trailer_keys' in result.output
+        assert 'trailer_keys: [fix, why, change, proof, ref]' in result.output
