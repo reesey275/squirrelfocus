@@ -12,8 +12,10 @@ def load_emit(tmp_path: Path):
     dst.parent.mkdir()
     dst.write_text(src.read_text())
     spec = importlib.util.spec_from_file_location("sqf_emit", dst)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load sqf_emit from {dst}")
     mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)  # type: ignore
+    spec.loader.exec_module(mod)
     return mod
 
 
