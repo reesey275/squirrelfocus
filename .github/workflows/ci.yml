@@ -81,15 +81,6 @@ jobs:
               | tee -a "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Poetry lock
-        if: steps.poetry.outputs.poetry_available == '1'
-        timeout-minutes: 15
-        shell: bash
-        run: |
-          set -euo pipefail
-          poetry --version
-          poetry lock --no-interaction
-
       - name: Install dependencies
         if: steps.poetry.outputs.poetry_available == '1'
         timeout-minutes: 15
