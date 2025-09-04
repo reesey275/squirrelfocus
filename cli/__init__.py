@@ -329,7 +329,7 @@ def report(
     fmt: str = typer.Option(
         "md",
         "--format",
-        click_type=click.Choice(["md", "txt"], case_sensitive=False),  # fmt
+        click_type=click.Choice(["md", "txt"], case_sensitive=False),
         help="Output format: md or txt.",
     ),
 ) -> None:
@@ -344,33 +344,55 @@ def report(
     if not jdir.exists():
         typer.echo("No entries found.")
         raise typer.Exit(code=1)
+
     cutoff = _now().date() - timedelta(days=since)
     entries: list[tuple[datetime, str, dict]] = []
+
     for path in sorted(jdir.glob("**/*.md")):
-        fm = parse_frontmatter(path.read_text(encoding="utf-8"))
+        text = path.read_text(encoding="utf-8")
+        fm = parse_frontmatter(text)
+
+        # Prefer created_at from front matter; fallback to filename prefix.
         date_str = fm.get("created_at")
-        if not date_str:
+        dt_date = None
+        if date_str:
+            try:
+                dt_date = datetime.fromisoformat(str(date_str)).date()
+            except Exception:
+                dt_date = None
+
+        if dt_date is None:
+            stem_prefix = path.stem[:10]
+            if (
+                len(stem_prefix) == 10
+                and stem_prefix[4] == "-"
+                and stem_prefix[7] == "-"
+            ):
+                try:
+                    dt_date = datetime.fromisoformat(stem_prefix).date()
+                except Exception:
+                    dt_date = None
+
+        if dt_date is None or dt_date < cutoff:
             continue
-        try:
-            dt = datetime.fromisoformat(str(date_str)).date()
-        except Exception:
-            continue
-        if dt < cutoff:
-            continue
+
         title = fm.get("title", path.stem)
         trailers = fm.get("trailers", {}) or {}
-        entries.append((dt, title, trailers))
+        entries.append((dt_date, title, trailers))
+
     if not entries:
         typer.echo("No entries found.")
         raise typer.Exit(code=1)
+
     lines: list[str] = []
-    for dt, title, trailers in sorted(entries):
-        header = f"{dt} {title}"
-        lines.append(f"### {header}" if fmt == "md" else header)
+    for dt_date, title, trailers in sorted(entries):
+        header = f"{dt_date} {title}"
+        lines.append(f"### {header}" if fmt.lower() == "md" else header)
         for k, v in trailers.items():
-            prefix = "- " if fmt == "md" else ""
+            prefix = "- " if fmt.lower() == "md" else ""
             lines.append(f"{prefix}{k}: {v}")
         lines.append("")
+
     typer.echo("\n".join(lines).rstrip())
 
 
