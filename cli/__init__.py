@@ -287,6 +287,22 @@ def doctor() -> None:
 
 
 @app.command()
+def report() -> None:
+    """List journal entry paths."""
+    cfg = load_cfg()
+    jdir = Path(cfg.get("journals_dir", "journal_logs"))
+    cutoff = datetime.now()
+    for path in sorted(jdir.glob("**/*.md")):
+        date_str = path.stem.split("-", 1)[0]
+        try:
+            dt = datetime.fromisoformat(date_str)
+        except ValueError:
+            continue
+        if dt < cutoff:
+            typer.echo(str(path))
+
+
+@app.command()
 def drop(text: str) -> None:
     """Append TEXT with a timestamp to ~/.squirrelfocus/acornlog.txt."""
     ensure_log_dir()
