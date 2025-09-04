@@ -1,3 +1,4 @@
+from datetime import date, datetime, timedelta
 from typer.testing import CliRunner
 import cli
 
@@ -200,6 +201,50 @@ def test_ask_prompt_missing_file(monkeypatch, tmp_path):
     result = runner.invoke(cli.app, ["ask", "hi"])
     assert result.exit_code != 0
     assert isinstance(result.exception, FileNotFoundError)
+
+
+def test_report_handles_dates(tmp_path, monkeypatch):
+    jdir = tmp_path / "journal_logs"
+    jdir.mkdir()
+    good1 = jdir / "one.md"
+    good1.write_text("---\ncreated_at: 2000-01-01\ntrailers:\n  fix: a\n---\n")
+    good2 = jdir / "two.md"
+    good2.write_text("---\ncreated_at: 2000-06-15\ntrailers:\n  fix: b\n---\n")
+    bad1 = jdir / "bad.md"
+    bad1.write_text("x")
+    bad2 = jdir / "bad2.md"
+    bad2.write_text("---\ncreated_at: 2000-13-01\n---\n")
+    monkeypatch.setattr(cli, "load_cfg", lambda: {"journals_dir": str(jdir)})
+    monkeypatch.setattr(cli, "_now", lambda: datetime(2000, 7, 1))
+    res = runner.invoke(cli.app, ["report", "--since", "400"])
+    assert res.exit_code == 0
+    out = res.output
+    assert "a" in out and "b" in out
+    assert "bad" not in out
+
+
+def test_report_ignores_future_files(tmp_path, monkeypatch):
+    jdir = tmp_path / "journal_logs"
+    jdir.mkdir()
+    today = date(2000, 7, 1)
+    future = today + timedelta(days=1)
+    fut = jdir / "future.md"
+    fut.write_text(
+        f"---\ncreated_at: {future}\ntrailers:\n  fix: future\n---\n"
+    )
+    past = jdir / "past.md"
+    past.write_text(
+        "---\ncreated_at: 2000-01-01\ntrailers:\n  fix: past\n---\n"
+    )
+    monkeypatch.setattr(cli, "load_cfg", lambda: {"journals_dir": str(jdir)})
+    monkeypatch.setattr(
+        cli, "_now", lambda: datetime.combine(today, datetime.min.time())
+    )
+    res = runner.invoke(cli.app, ["report", "--since", "1000"])
+    assert res.exit_code == 0
+    out = res.output
+    assert "past" in out
+    assert "future" not in out
 
 
 def test_add_help():
