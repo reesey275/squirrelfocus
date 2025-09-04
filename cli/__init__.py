@@ -329,7 +329,7 @@ def report(
     fmt: str = typer.Option(
         "md",
         "--format",
-        click_type=click.Choice(["md", "txt"], case_sensitive=False),
+        click_type=click.Choice(["md", "txt"], case_sensitive=False),  # fmt
         help="Output format: md or txt.",
     ),
 ) -> None:
