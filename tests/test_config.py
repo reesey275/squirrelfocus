@@ -5,16 +5,19 @@ import cli
 runner = CliRunner()
 
 def _write(text: str) -> None:
-    Path('.squirrelfocus').mkdir(exist_ok=True)
-    Path('.squirrelfocus/config.yaml').write_text(text)
+    cfg = Path('.squirrelfocus')
+    cfg.mkdir(parents=True, exist_ok=True)
+    (cfg / 'config.yaml').write_text(text)
 
 def test_valid_config_allows_run():
     with runner.isolated_filesystem():
-        _write(
+        cfg = (
             'journals_dir: logs\n'
             'trailer_keys: [fix, why]\n'
             "summary_format: 'x'\n"
         )
+        _write(cfg)
+        _write(cfg)
         result = runner.invoke(cli.app, ['hello'])
         assert result.exit_code == 0
 
