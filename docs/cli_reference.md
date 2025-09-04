@@ -11,6 +11,55 @@ The CLI offers a few flags in addition to its subcommands:
 - `--show-completion` prints the completion script to standard output.
 - `--help` displays usage information for the selected command.
 
+## init
+
+Set up the current directory for SquirrelFocus.
+
+```bash
+poetry run sf init
+poetry run sf init --with-workflows --with-hook
+```
+
+Options:
+
+- `--with-workflows` copy the CI summary workflow.
+- `--with-hook` install commit hooks.
+- `--force` overwrite existing files.
+- `--journals-dir TEXT` name of the journals directory.
+
+## new [OPTIONS]
+
+Create a journal entry from the default template. Options map to commit
+trailers.
+
+```bash
+poetry run sf new --fix bug --why "to reproduce"
+```
+
+## preview
+
+Render the CI summary for the latest journal entry.
+
+```bash
+poetry run sf preview
+```
+
+## doctor
+
+Check installation health and return a non-zero exit code on problems.
+
+```bash
+poetry run sf doctor
+```
+
+## report
+
+List journal entry paths prior to today.
+
+```bash
+poetry run sf report
+```
+
 ## hello [NAME]
 
 Print a friendly greeting. `NAME` defaults to `"world"`.

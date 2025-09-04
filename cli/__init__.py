@@ -165,6 +165,8 @@ def init(
 
     for path in created:
         typer.echo(f"created {path}")
+    if not created:
+        typer.echo("No changes.")
 
 
 @app.command()
@@ -225,12 +227,15 @@ def preview() -> None:
     script = Path("scripts") / "sqf_emit.py"
     if not script.exists():
         typer.echo("No emitter script found.")
-        raise typer.Exit()
+        raise typer.Exit(code=1)
     result = subprocess.run(
         [sys.executable, str(script), "summary"],
         capture_output=True,
         text=True,
     )
+    if result.returncode != 0:
+        typer.echo(result.stderr.strip() or "Emitter failed.")
+        raise typer.Exit(code=result.returncode)
     msg = result.stdout.strip()
     if msg:
         typer.echo(msg)
@@ -292,6 +297,10 @@ def report() -> None:
     cfg = load_cfg()
     jdir = Path(cfg.get("journals_dir", "journal_logs"))
     cutoff = datetime.now()
+    if not jdir.exists():
+        typer.echo("No journal entries found.")
+        raise typer.Exit(code=1)
+    found = False
     for path in sorted(jdir.glob("**/*.md")):
         date_str = path.stem[:10]
         if len(date_str) != 10 or date_str[4] != "-" or date_str[7] != "-":
@@ -302,6 +311,10 @@ def report() -> None:
             continue
         if dt < cutoff:
             typer.echo(str(path))
+            found = True
+    if not found:
+        typer.echo("No journal entries found.")
+        raise typer.Exit(code=1)
 
 
 @app.command()

@@ -265,3 +265,27 @@ def test_report_ignores_future_files(tmp_path, monkeypatch):
     lines = result.output.strip().splitlines()
     assert str(past_file) in lines
     assert str(future_file) not in lines
+
+
+def test_init_help():
+    result = runner.invoke(cli.app, ["init", "--help"])
+    assert result.exit_code == 0
+    assert "--with-workflows" in result.output
+
+
+def test_preview_missing_script():
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.app, ["preview"])
+        assert result.exit_code != 0
+        assert "No emitter script found." in result.output
+
+
+def test_init_idempotent():
+    with runner.isolated_filesystem():
+        first = runner.invoke(cli.app, ["init"])
+        assert first.exit_code == 0
+        assert "created" in first.output
+        second = runner.invoke(cli.app, ["init"])
+        assert second.exit_code == 0
+        assert "created" not in second.output
+        assert "No changes." in second.output
