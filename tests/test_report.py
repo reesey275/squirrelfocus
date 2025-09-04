@@ -9,7 +9,7 @@ runner = CliRunner()
 
 class FixedDate(datetime):
     @classmethod
-    def now(cls, tz=None):  # noqa: D401
+    def now(cls, tz=None):
         return cls(2024, 2, 1)
 
 
