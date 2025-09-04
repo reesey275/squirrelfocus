@@ -57,8 +57,10 @@ def test_multiple_entries_fallback_parser(tmp_path, capsys, monkeypatch):
     old.write_text("---\ntrailers:\n  fix: old\n---\n")
     new = jdir / "2024-01-02-new.md"
     new.write_text("---\ntrailers:\n  fix: new\n---\n")
-    os.utime(old, (1, 1))
-    os.utime(new, (2, 2))
+    older_ts = (1, 1)
+    newer_ts = (2, 2)
+    os.utime(old, older_ts)
+    os.utime(new, newer_ts)
     monkeypatch.setattr(sys, "argv", ["sqf_emit.py", "trailers"])
     emit.main()
     out = capsys.readouterr().out.strip()
