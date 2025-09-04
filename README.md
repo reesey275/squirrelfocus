@@ -122,7 +122,13 @@ The default command prints a friendly greeting. Use `drop` to store a note and
 poetry run sf drop "Fixed a tricky bug"
 poetry run sf show 3
 poetry run sf ask "How do I plan tomorrow?"
+poetry run sf report
+poetry run sf report --since 7 --format txt
 ```
+
+Use `report` to aggregate recent journal entries. The command looks back
+30 days by default. Adjust the range with `--since DAYS` and select plain
+text with `--format txt`.
 
 ## Codex Journal
 

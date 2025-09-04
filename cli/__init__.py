@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import os
 import shutil
@@ -67,6 +67,35 @@ def load_cfg() -> dict:
         except Exception:
             pass
     return dict(DEF_CFG)
+
+
+def parse_frontmatter(text: str) -> dict:
+    """Return front matter dict parsed from TEXT."""
+    if not text.startswith("---"):
+        return {}
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return {}
+    fm_text = parts[1]
+    if HAVE_YAML:
+        try:
+            return yaml.safe_load(fm_text) or {}
+        except Exception:
+            return {}
+    data: dict = {}
+    section: str | None = None
+    for ln in fm_text.splitlines():
+        if ln.strip().endswith(":") and not ln.startswith(" "):
+            section = ln.strip()[:-1]
+            data[section] = {}
+            continue
+        if ":" in ln:
+            k, v = ln.split(":", 1)
+            if section:
+                data[section][k.strip()] = v.strip().strip('"').strip("'")
+            else:
+                data[k.strip()] = v.strip().strip('"').strip("'")
+    return data
 
 
 def slugify(text: str) -> str:
@@ -284,6 +313,57 @@ def doctor() -> None:
         )
         fail = True
     raise typer.Exit(code=1 if fail else 0)
+
+
+@app.command()
+def report(
+    since: int = typer.Option(30, "--since", help="Days back to include."),
+    fmt: str = typer.Option(
+        "md", "--format", help="Output format: md or txt."
+    ),
+) -> None:
+    """Aggregate journal entries.
+
+    Options:
+      --since DAYS   Include entries from the last DAYS days.
+      --format TEXT  Output format: md or txt.
+    """
+    if fmt not in {"md", "txt"}:
+        typer.echo("Invalid format. Use 'md' or 'txt'.")
+        raise typer.Exit(code=1)
+    cfg = load_cfg()
+    jdir = Path(cfg.get("journals_dir", "journal_logs"))
+    if not jdir.exists():
+        typer.echo("No entries found.")
+        raise typer.Exit()
+    cutoff = datetime.now().date() - timedelta(days=since)
+    entries: list[tuple[datetime, str, dict]] = []
+    for path in sorted(jdir.glob("**/*.md")):
+        fm = parse_frontmatter(path.read_text(encoding="utf-8"))
+        date_str = fm.get("created_at")
+        if not date_str:
+            continue
+        try:
+            dt = datetime.fromisoformat(str(date_str)).date()
+        except Exception:
+            continue
+        if dt < cutoff:
+            continue
+        title = fm.get("title", path.stem)
+        trailers = fm.get("trailers", {}) or {}
+        entries.append((dt, title, trailers))
+    if not entries:
+        typer.echo("No entries found.")
+        raise typer.Exit()
+    lines: list[str] = []
+    for dt, title, trailers in sorted(entries):
+        header = f"{dt} {title}"
+        lines.append(f"### {header}" if fmt == "md" else header)
+        for k, v in trailers.items():
+            prefix = "- " if fmt == "md" else ""
+            lines.append(f"{prefix}{k}: {v}")
+        lines.append("")
+    typer.echo("\n".join(lines).rstrip())
 
 
 @app.command()
