@@ -224,3 +224,28 @@ def test_multiply_help():
     result = runner.invoke(cli.app, ["multiply", "--help"])
     assert result.exit_code == 0
     assert "product of A and B" in result.output
+
+
+def test_report_handles_dates(tmp_path, monkeypatch):
+    jdir = tmp_path / "journal_logs"
+    jdir.mkdir()
+    good1 = jdir / "2000-01-01-note.md"
+    good1.write_text("x")
+    good2 = jdir / "2000-06-15.md"
+    good2.write_text("x")
+    bad1 = jdir / "bad.md"
+    bad1.write_text("x")
+    bad2 = jdir / "2000-13-01.md"
+    bad2.write_text("x")
+    bad3 = jdir / "20000101.md"
+    bad3.write_text("x")
+    monkeypatch.setattr(
+        cli, "load_cfg", lambda: {"journals_dir": str(jdir)}
+    )
+    result = runner.invoke(cli.app, ["report"])
+    assert result.exit_code == 0
+    lines = result.output.strip().splitlines()
+    assert str(good1) in lines and str(good2) in lines
+    assert str(bad1) not in lines
+    assert str(bad2) not in lines
+    assert str(bad3) not in lines
