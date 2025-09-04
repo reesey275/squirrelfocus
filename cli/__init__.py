@@ -294,11 +294,7 @@ def report() -> None:
     cutoff = datetime.now()
     for path in sorted(jdir.glob("**/*.md")):
         date_str = path.stem[:10]
-        if (
-            len(date_str) != 10
-            or date_str[4] != "-"
-            or date_str[7] != "-"
-        ):
+        if len(date_str) != 10 or date_str[4] != "-" or date_str[7] != "-":
             continue
         try:
             dt = datetime.fromisoformat(date_str)

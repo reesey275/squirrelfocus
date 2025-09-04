@@ -239,9 +239,7 @@ def test_report_handles_dates(tmp_path, monkeypatch):
     bad2.write_text("x")
     bad3 = jdir / "20000101.md"
     bad3.write_text("x")
-    monkeypatch.setattr(
-        cli, "load_cfg", lambda: {"journals_dir": str(jdir)}
-    )
+    monkeypatch.setattr(cli, "load_cfg", lambda: {"journals_dir": str(jdir)})
     result = runner.invoke(cli.app, ["report"])
     assert result.exit_code == 0
     lines = result.output.strip().splitlines()
