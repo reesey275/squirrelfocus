@@ -92,15 +92,7 @@ def init(
         "journal_logs", "--journals-dir", help="Journal directory."
     ),
 ) -> None:
-    """Guided setup.
-
-    Options:
-      --with-workflows    Copy CI workflow.
-      --with-hook         Run install_hooks.sh (Unix) or install_hooks.ps1
-                          (Windows).
-      --force             Allow overwrites.
-      --journals-dir TEXT  Journal directory name.
-    """
+    """Guided setup for configuration files and journal directory."""
     created: list[Path] = []
 
     cfg_src = _BASE_PATH / ".squirrelfocus" / "config.yaml"

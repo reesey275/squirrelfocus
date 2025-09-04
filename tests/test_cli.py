@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import re
 from typer.testing import CliRunner
 import cli
 
@@ -270,7 +271,8 @@ def test_report_ignores_future_files(tmp_path, monkeypatch):
 def test_init_help():
     result = runner.invoke(cli.app, ["init", "--help"])
     assert result.exit_code == 0
-    assert "--with-workflows" in result.output
+    out = re.sub(r"\x1b\[[0-9;]*m", "", result.output)
+    assert "--with-workflows" in out
 
 
 def test_preview_missing_script():
