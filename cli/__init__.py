@@ -7,9 +7,9 @@ import shutil
 import subprocess
 import sys
 
-import click
 import openai
 import typer
+import click
 
 try:  # optional
     import yaml
@@ -324,9 +324,7 @@ def report(
     fmt: str = typer.Option(
         "md",
         "--format",
-        parser=lambda v: click.Choice(
-            ["md", "txt"], case_sensitive=False
-        ).convert(v, None, None),
+        click_type=click.Choice(["md", "txt"], case_sensitive=False),
         help="Output format: md or txt.",
     ),
 ) -> None:

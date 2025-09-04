@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+import re
 from typer.testing import CliRunner
 import cli
 
@@ -54,15 +55,17 @@ def test_report_invalid_format(monkeypatch):
         Path("journal_logs").mkdir()
         monkeypatch.setattr(cli, "datetime", FixedDate)
         res = runner.invoke(cli.app, ["report", "--format", "html"])
+        out = re.sub(r"\x1b\[[0-9;]*m", "", res.output)
         assert res.exit_code == 2
-        assert "Invalid value for '--format'" in res.output
+        assert "Invalid value for '--format'" in out
 
 
 def test_report_negative_since():
     with runner.isolated_filesystem():
         res = runner.invoke(cli.app, ["report", "--since", "-1"])
+        out = re.sub(r"\x1b\[[0-9;]*m", "", res.output)
         assert res.exit_code == 2
-        assert "Invalid value for '--since'" in res.output
+        assert "Invalid value for '--since'" in out
 
 
 def test_report_format_case_insensitive(monkeypatch):
