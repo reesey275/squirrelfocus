@@ -10,6 +10,10 @@ def test_new_creates_entry():
         Path(".squirrelfocus").mkdir()
         Path(".squirrelfocus/config.yaml").write_text(
             "journals_dir: journal_logs\n"
+            "entry_glob: '**/*.md'\n"
+            "prefer_frontmatter: true\n"
+            "trailer_keys: [fix]\n"
+            "summary_format: x\n"
         )
         Path("templates").mkdir()
         Path("templates/sqf_fix.md").write_text("---\ntrailers:\n---\nbody\n")
