@@ -324,7 +324,8 @@ def report(
     fmt: str = typer.Option(
         "md",
         "--format",
-        click_type=click.Choice(["md", "txt"], case_sensitive=False),
+        parser=lambda v: click.Choice(["md", "txt"], case_sensitive=False)
+        .convert(v, None, None),
         help="Output format: md or txt.",
     ),
 ) -> None:
