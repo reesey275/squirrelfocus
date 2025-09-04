@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from typer.testing import CliRunner
 import cli
 
@@ -247,3 +248,20 @@ def test_report_handles_dates(tmp_path, monkeypatch):
     assert str(bad1) not in lines
     assert str(bad2) not in lines
     assert str(bad3) not in lines
+
+
+def test_report_ignores_future_files(tmp_path, monkeypatch):
+    runner = CliRunner()
+    jdir = tmp_path / "journal_logs"
+    jdir.mkdir()
+    future = date.today() + timedelta(days=1)
+    future_file = jdir / f"{future.isoformat()}.md"
+    future_file.write_text("x")
+    past_file = jdir / "2000-01-01.md"
+    past_file.write_text("x")
+    monkeypatch.setattr(cli, "load_cfg", lambda: {"journals_dir": str(jdir)})
+    result = runner.invoke(cli.app, ["report"])
+    assert result.exit_code == 0
+    lines = result.output.strip().splitlines()
+    assert str(past_file) in lines
+    assert str(future_file) not in lines
