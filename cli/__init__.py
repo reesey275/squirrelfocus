@@ -20,6 +20,7 @@ app = typer.Typer(
     )
 )
 
+
 @app.callback(invoke_without_command=True)
 def _startup(_: typer.Context) -> None:
     conf.validate(conf.read_cfg())
@@ -31,6 +32,7 @@ LOG_DIR = Path.home() / ".squirrelfocus"
 LOG_FILE = LOG_DIR / "acornlog.txt"
 _BASE_PATH = Path(__file__).resolve().parents[1]
 PROMPT_FILE = _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
+
 
 def load_prompt() -> str:
     """Return the Codex work item prompt."""
@@ -84,7 +86,8 @@ def init(
         )
     else:
         cfg_dst.write_text(
-            f"journals_dir: {journals_dir}\n", encoding="utf-8"
+            f"journals_dir: {journals_dir}\n",
+            encoding="utf-8",
         )
 
     jdir = Path(journals_dir)
@@ -252,8 +255,8 @@ def doctor() -> None:
         typer.echo("commit hook: ok")
     else:
         typer.echo(
-            "commit hook: missing (run 'scripts/install_hooks.sh' on Unix or "
-            "'scripts/install_hooks.ps1' on Windows)"
+            "commit hook: missing (run 'scripts/install_hooks.sh' on "
+            "Unix or 'scripts/install_hooks.ps1' on Windows)"
         )
         fail = True
     raise typer.Exit(code=1 if fail else 0)

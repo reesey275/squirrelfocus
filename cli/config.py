@@ -31,6 +31,7 @@ REQUIRED_TYPES: dict[str, type] = {
     "journals_dir": str,
 }
 
+
 def read_cfg() -> dict[str, Any] | None:
     """Return raw config or None if file missing."""
     if not HAVE_YAML or not CFG_PATH.exists():
@@ -45,6 +46,7 @@ def read_cfg() -> dict[str, Any] | None:
         typer.echo(f"Could not read config: {err}")
         raise typer.Exit(code=1)
 
+
 def load_cfg(data: dict[str, Any] | None = None) -> dict[str, Any]:
     """Return configuration merged with defaults."""
     if data is None:
@@ -53,11 +55,13 @@ def load_cfg(data: dict[str, Any] | None = None) -> dict[str, Any]:
     cfg.update({k: v for k, v in data.items() if v is not None})
     return cfg
 
+
 def _example_line(key: str, value: Any) -> str:
     if isinstance(value, list):
         inner = ", ".join(str(v) for v in value)
         return f"{key}: [{inner}]"
     return f"{key}: {value}"
+
 
 def validate(data: dict[str, Any] | None) -> None:
     """Validate raw config data."""
