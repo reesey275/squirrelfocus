@@ -354,8 +354,11 @@ def report(
             continue
         try:
             dt = datetime.fromisoformat(str(date_str)).date()
-        except Exception:
-            continue
+        except ValueError:
+            try:
+                dt = datetime.strptime(str(date_str), "%Y-%m-%d").date()
+            except Exception:
+                continue
         if dt < cutoff or dt > today:
             continue
         title = fm.get("title", path.stem)
