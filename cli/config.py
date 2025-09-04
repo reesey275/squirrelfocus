@@ -27,7 +27,7 @@ DEFAULTS: dict[str, Any] = {
     ),
 }
 
-REQUIRED: dict[str, type] = {
+REQUIRED_TYPES: dict[str, type] = {
     "journals_dir": str,
 }
 
@@ -63,7 +63,7 @@ def validate(data: dict[str, Any] | None) -> None:
     """Validate raw config data."""
     if data is None:
         return
-    for key, typ in REQUIRED.items():
+    for key, typ in REQUIRED_TYPES.items():
         if key not in data:
             typer.echo(f"Config missing '{key}'.")
             typer.echo(f"Example: {_example_line(key, DEFAULTS[key])}")
@@ -74,7 +74,7 @@ def validate(data: dict[str, Any] | None) -> None:
             typer.echo(f"Example: {_example_line(key, defval)}")
             raise typer.Exit(code=1)
     for key, defval in DEFAULTS.items():
-        if key in data and key not in REQUIRED:
+        if key in data and key not in REQUIRED_TYPES:
             if not isinstance(data[key], type(defval)):
                 typer.echo(f"Config key '{key}' malformed.")
                 typer.echo(f"Example: {_example_line(key, defval)}")
