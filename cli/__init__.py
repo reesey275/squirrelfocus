@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 
+import click
 import openai
 import typer
 
@@ -317,9 +318,14 @@ def doctor() -> None:
 
 @app.command()
 def report(
-    since: int = typer.Option(30, "--since", help="Days back to include."),
+    since: int = typer.Option(
+        30, "--since", min=0, help="Days back to include."
+    ),
     fmt: str = typer.Option(
-        "md", "--format", help="Output format: md or txt."
+        "md",
+        "--format",
+        click_type=click.Choice(["md", "txt"], case_sensitive=False),
+        help="Output format: md or txt.",
     ),
 ) -> None:
     """Aggregate journal entries.
@@ -328,9 +334,6 @@ def report(
       --since DAYS   Include entries from the last DAYS days.
       --format TEXT  Output format: md or txt.
     """
-    if fmt not in {"md", "txt"}:
-        typer.echo("Invalid format. Use 'md' or 'txt'.")
-        raise typer.Exit(code=1)
     cfg = load_cfg()
     jdir = Path(cfg.get("journals_dir", "journal_logs"))
     if not jdir.exists():

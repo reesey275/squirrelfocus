@@ -55,5 +55,37 @@ def test_report_invalid_format(monkeypatch):
         monkeypatch.setattr(cli, "datetime", FixedDate)
         res = runner.invoke(cli.app, ["report", "--format", "html"])
         assert res.exit_code != 0
-        assert "Invalid format" in res.output
+        assert "Invalid value for '--format'" in res.output
+
+
+def test_report_negative_since():
+    with runner.isolated_filesystem():
+        res = runner.invoke(cli.app, ["report", "--since", "-1"])
+        assert res.exit_code != 0
+        assert "Invalid value for '--since'" in res.output
+
+
+def test_report_missing_journal_dir(monkeypatch):
+    with runner.isolated_filesystem():
+        Path(".squirrelfocus").mkdir()
+        Path(".squirrelfocus/config.yaml").write_text(
+            "journals_dir: journal_logs\n"
+        )
+        monkeypatch.setattr(cli, "datetime", FixedDate)
+        res = runner.invoke(cli.app, ["report"])
+        assert res.exit_code == 0
+        assert "No entries found." in res.output
+
+
+def test_report_empty_journal_dir(monkeypatch):
+    with runner.isolated_filesystem():
+        Path(".squirrelfocus").mkdir()
+        Path(".squirrelfocus/config.yaml").write_text(
+            "journals_dir: journal_logs\n"
+        )
+        Path("journal_logs").mkdir()
+        monkeypatch.setattr(cli, "datetime", FixedDate)
+        res = runner.invoke(cli.app, ["report"])
+        assert res.exit_code == 0
+        assert "No entries found." in res.output
 
