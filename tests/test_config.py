@@ -4,10 +4,17 @@ import cli
 
 runner = CliRunner()
 
+
+def _cfg_path() -> Path:
+    path = Path('.squirrelfocus') / 'config.yaml'
+    cli.conf.CFG_PATH = path
+    return path
+
+
 def _write(text: str) -> None:
-    cfg = Path('.squirrelfocus')
-    cfg.mkdir(parents=True, exist_ok=True)
-    (cfg / 'config.yaml').write_text(text)
+    path = _cfg_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
 
 def test_valid_config_allows_run():
     with runner.isolated_filesystem():
@@ -79,7 +86,7 @@ def test_malformed_yaml_shows_error():
 
 def test_unreadable_config_shows_error():
     with runner.isolated_filesystem():
-        path = Path('.squirrelfocus') / 'config.yaml'
+        path = _cfg_path()
         path.parent.mkdir(exist_ok=True)
         path.mkdir()
         result = runner.invoke(cli.app, ['hello'])
