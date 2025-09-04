@@ -64,3 +64,21 @@ def test_trailer_keys_elements_must_be_strings():
         assert result.exit_code != 0
         assert 'trailer_keys' in result.output
         assert 'trailer_keys: [fix, why, change, proof, ref]' in result.output
+
+
+def test_malformed_yaml_shows_error():
+    with runner.isolated_filesystem():
+        _write('journals_dir: [\n')
+        result = runner.invoke(cli.app, ['hello'])
+        assert result.exit_code != 0
+        assert 'Failed to parse config' in result.output
+
+
+def test_unreadable_config_shows_error():
+    with runner.isolated_filesystem():
+        path = Path('.squirrelfocus') / 'config.yaml'
+        path.parent.mkdir(exist_ok=True)
+        path.mkdir()
+        result = runner.invoke(cli.app, ['hello'])
+        assert result.exit_code != 0
+        assert 'Could not read config' in result.output

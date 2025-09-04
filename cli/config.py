@@ -38,8 +38,12 @@ def read_cfg() -> dict[str, Any] | None:
     try:
         with CFG_PATH.open("r", encoding="utf-8") as fh:
             return yaml.safe_load(fh) or {}
-    except Exception:
-        return {}
+    except yaml.YAMLError as err:
+        typer.echo(f"Failed to parse config: {err}")
+        raise typer.Exit(code=1)
+    except OSError as err:
+        typer.echo(f"Could not read config: {err}")
+        raise typer.Exit(code=1)
 
 def load_cfg(data: dict[str, Any] | None = None) -> dict[str, Any]:
     """Return configuration merged with defaults."""
