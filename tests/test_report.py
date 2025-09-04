@@ -15,7 +15,7 @@ class FixedDate(datetime):
 def make_entry(path: Path, date: str, fix: str) -> None:
     path.write_text(
         "---\n"
-        f"created_at: \"{date}\"\n"
+        f'created_at: "{date}"\n'
         "trailers:\n"
         f"  fix: {fix}\n"
         "---\n"
@@ -104,4 +104,3 @@ def test_report_empty_journal_dir(monkeypatch):
         res = runner.invoke(cli.app, ["report"])
         assert res.exit_code == 1
         assert "No entries found." in res.output
-
