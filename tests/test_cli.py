@@ -251,6 +251,7 @@ def test_report_handles_dates(tmp_path, monkeypatch):
 
 
 def test_report_ignores_future_files(tmp_path, monkeypatch):
+    runner = CliRunner()
     jdir = tmp_path / "journal_logs"
     jdir.mkdir()
     future = date.today() + timedelta(days=1)
