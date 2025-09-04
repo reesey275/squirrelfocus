@@ -351,9 +351,7 @@ def report(
         date_str = fm.get("created_at")
         if not date_str:
             continue
-        try:
-            dt = datetime.fromisoformat(str(date_str)).date()
-        except Exception:
+        except ValueError:
             continue
         if dt < cutoff:
             continue
