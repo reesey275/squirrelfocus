@@ -52,3 +52,15 @@ def test_required_key_malformed_shows_example():
         assert result.exit_code != 0
         assert 'journals_dir' in result.output
         assert 'journals_dir: journal_logs' in result.output
+
+def test_trailer_keys_elements_must_be_strings():
+    with runner.isolated_filesystem():
+        _write(
+            'journals_dir: logs\n'
+            'trailer_keys: [fix, 1]\n'
+            "summary_format: 'x'\n"
+        )
+        result = runner.invoke(cli.app, ['hello'])
+        assert result.exit_code != 0
+        assert 'trailer_keys' in result.output
+        assert 'trailer_keys: [fix, why, change, proof, ref]' in result.output
