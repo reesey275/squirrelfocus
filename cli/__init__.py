@@ -346,7 +346,7 @@ def report(
         raise typer.Exit(code=1)
 
     cutoff = _now().date() - timedelta(days=since)
-    entries: list[tuple[datetime, str, dict]] = []
+    entries: list[tuple[date, str, dict]] = []
 
     for path in sorted(jdir.glob("**/*.md")):
         text = path.read_text(encoding="utf-8")
