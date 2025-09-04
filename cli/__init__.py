@@ -10,13 +10,8 @@ import sys
 import openai
 import typer
 
-try:  # optional
-    import yaml
-
-    HAVE_YAML = True
-except Exception:  # pragma: no cover
-    yaml = None
-    HAVE_YAML = False
+from . import config
+from .config import CFG_PATH, DEFAULTS as DEF_CFG, HAVE_YAML, yaml
 
 app = typer.Typer(
     help=(
@@ -29,20 +24,9 @@ app = typer.Typer(
 LOG_DIR = Path.home() / ".squirrelfocus"
 LOG_FILE = LOG_DIR / "acornlog.txt"
 _BASE_PATH = Path(__file__).resolve().parents[1]
-PROMPT_FILE = _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
-
-CFG_PATH = Path(".squirrelfocus") / "config.yaml"
-DEF_CFG = {
-    "journals_dir": "journal_logs",
-    "trailer_keys": ["fix", "why", "change", "proof", "ref"],
-    "summary_format": (
-        "### CI Triage\n"
-        "- **Fix:** {{fix}}\n"
-        "- **Why:** {{why}}\n"
-        "- **Change:** {{change}}\n"
-        "- **Proof:** {{proof}}\n"
-    ),
-}
+PROMPT_FILE = (
+    _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
+)
 
 
 def load_prompt() -> str:
@@ -57,16 +41,18 @@ def ensure_log_dir() -> None:
 
 def load_cfg() -> dict:
     """Return configuration merged with defaults."""
-    if HAVE_YAML and CFG_PATH.exists():
-        try:
-            with CFG_PATH.open("r", encoding="utf-8") as fh:
-                data = yaml.safe_load(fh) or {}
-            out = dict(DEF_CFG)
-            out.update({k: v for k, v in data.items() if v is not None})
-            return out
-        except Exception:
-            pass
-    return dict(DEF_CFG)
+    return config.load()[0]
+
+
+@app.callback()
+def main(ctx: typer.Context) -> None:
+    """Validate configuration before running commands."""
+    cfg, problems = config.load()
+    if problems:
+        for msg in problems:
+            typer.echo(f"config: {msg}")
+        typer.echo("Run 'sf init' to fix config.")
+    ctx.obj = cfg
 
 
 def slugify(text: str) -> str:
@@ -117,7 +103,10 @@ def init(
             yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8"
         )
     else:
-        cfg_dst.write_text(f"journals_dir: {journals_dir}\n", encoding="utf-8")
+        cfg_dst.write_text(
+            f"journals_dir: {journals_dir}\n",
+            encoding="utf-8",
+        )
 
     jdir = Path(journals_dir)
     if not jdir.exists():
