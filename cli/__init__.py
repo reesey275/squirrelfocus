@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from pathlib import Path
-from enum import Enum
 import os
 import shutil
 import subprocess
 import sys
 
+import click
 import openai
 import typer
 
@@ -44,11 +44,6 @@ DEF_CFG = {
         "- **Proof:** {{proof}}\n"
     ),
 }
-
-
-class ReportFormat(str, Enum):
-    md = "md"
-    txt = "txt"
 
 
 def load_prompt() -> str:
@@ -331,10 +326,10 @@ def report(
     since: int = typer.Option(
         30, "--since", min=0, help="Days back to include."
     ),
-    fmt: ReportFormat = typer.Option(
-        ReportFormat.md,
+    fmt: str = typer.Option(
+        "md",
         "--format",
-        case_sensitive=False,
+        click_type=click.Choice(["md", "txt"], case_sensitive=False),
         help="Output format: md or txt.",
     ),
 ) -> None:
@@ -371,9 +366,9 @@ def report(
     lines: list[str] = []
     for dt, title, trailers in sorted(entries):
         header = f"{dt} {title}"
-        lines.append(f"### {header}" if fmt == ReportFormat.md else header)
+        lines.append(f"### {header}" if fmt == "md" else header)
         for k, v in trailers.items():
-            prefix = "- " if fmt == ReportFormat.md else ""
+            prefix = "- " if fmt == "md" else ""
             lines.append(f"{prefix}{k}: {v}")
         lines.append("")
     typer.echo("\n".join(lines).rstrip())
