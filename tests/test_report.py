@@ -54,15 +54,31 @@ def test_report_invalid_format(monkeypatch):
         Path("journal_logs").mkdir()
         monkeypatch.setattr(cli, "datetime", FixedDate)
         res = runner.invoke(cli.app, ["report", "--format", "html"])
-        assert res.exit_code != 0
+        assert res.exit_code == 2
         assert "Invalid value for '--format'" in res.output
 
 
 def test_report_negative_since():
     with runner.isolated_filesystem():
         res = runner.invoke(cli.app, ["report", "--since", "-1"])
-        assert res.exit_code != 0
+        assert res.exit_code == 2
         assert "Invalid value for '--since'" in res.output
+
+
+def test_report_format_case_insensitive(monkeypatch):
+    with runner.isolated_filesystem():
+        Path(".squirrelfocus").mkdir()
+        Path(".squirrelfocus/config.yaml").write_text(
+            "journals_dir: journal_logs\n"
+        )
+        jdir = Path("journal_logs")
+        jdir.mkdir()
+        make_entry(jdir / "2024-01-15.md", "2024-01-15", "bug1")
+        monkeypatch.setattr(cli, "datetime", FixedDate)
+        res = runner.invoke(cli.app, ["report", "--format", "TXT"])
+        assert res.exit_code == 0
+        assert "bug1" in res.output
+        assert "###" not in res.output
 
 
 def test_report_missing_journal_dir(monkeypatch):
