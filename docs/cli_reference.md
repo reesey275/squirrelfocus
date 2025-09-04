@@ -40,6 +40,19 @@ poetry run sf show 3
 poetry run sf show -1   # fails with an error
 ```
 
+## report [--since DAYS] [--format {md,txt}]
+
+Aggregate journal entries from the past `DAYS` days. The default is `30`.
+`--format` selects Markdown (`md`) or plain text (`txt`).
+Names are case-insensitive.
+
+```bash
+poetry run sf report
+poetry run sf report --since 7
+poetry run sf report --format txt
+poetry run sf report --format html  # prints an error
+```
+
 ## ask QUESTION
 
 Create a work item from `QUESTION` using OpenAI.
