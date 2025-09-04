@@ -259,9 +259,7 @@ def test_report_ignores_future_files(tmp_path, monkeypatch):
     future_file.write_text("x")
     past_file = jdir / "2000-01-01.md"
     past_file.write_text("x")
-    monkeypatch.setattr(
-        cli, "load_cfg", lambda: {"journals_dir": str(jdir)}
-    )
+    monkeypatch.setattr(cli, "load_cfg", lambda: {"journals_dir": str(jdir)})
     result = runner.invoke(cli.app, ["report"])
     assert result.exit_code == 0
     lines = result.output.strip().splitlines()
