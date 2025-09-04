@@ -64,8 +64,17 @@ def validate(data: dict[str, Any] | None) -> None:
             typer.echo(f"Config missing '{key}'.")
             typer.echo(f"Example: {_example_line(key, DEFAULTS[key])}")
             raise typer.Exit(code=1)
+        if not isinstance(data[key], typ):
+            typer.echo(f"Config key '{key}' malformed.")
+            defval = DEFAULTS.get(key, typ())
+            typer.echo(f"Example: {_example_line(key, defval)}")
+            raise typer.Exit(code=1)
     for key, defval in DEFAULTS.items():
-        if key in data and not isinstance(data[key], type(defval)):
+        if (
+            key in data
+            and key not in REQUIRED
+            and not isinstance(data[key], type(defval))
+        ):
             typer.echo(f"Config key '{key}' malformed.")
             typer.echo(f"Example: {_example_line(key, defval)}")
             raise typer.Exit(code=1)
