@@ -38,7 +38,8 @@ poetry run sf new --fix bug --why "to reproduce"
 
 ## preview
 
-Render the latest journal entry. The default format is `summary`.
+Render the latest journal entry. The default format is `summary`. Supported
+formats are listed in `PREVIEW_FORMATS`.
 
 ```bash
 poetry run sf preview --format summary
@@ -47,7 +48,7 @@ poetry run sf preview --format trailers
 
 Options:
 
-- `--format [summary|trailers]` choose output type; default is `summary`.
+- `--format FORMAT` choose output type (`PREVIEW_FORMATS`; default `summary`).
 
 ## doctor
 

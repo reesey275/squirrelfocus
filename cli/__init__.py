@@ -33,6 +33,7 @@ LOG_DIR = Path.home() / ".squirrelfocus"
 LOG_FILE = LOG_DIR / "acornlog.txt"
 _BASE_PATH = Path(__file__).resolve().parents[1]
 PROMPT_FILE = _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
+PREVIEW_FORMATS = ("summary", "trailers")
 
 
 def load_prompt() -> str:
@@ -198,8 +199,8 @@ def preview(
     fmt: str = typer.Option(
         "summary",
         "--format",
-        click_type=click.Choice(["summary", "trailers"]),
-        help="Output format: 'summary' or 'trailers'.",
+        click_type=click.Choice(PREVIEW_FORMATS),
+        help=f"Output format: {' or '.join(PREVIEW_FORMATS)}.",
     ),
 ) -> None:
     """Render the latest journal entry in the chosen format."""
