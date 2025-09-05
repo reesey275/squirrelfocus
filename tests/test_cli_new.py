@@ -51,9 +51,7 @@ def test_new_journal_dir_failure(monkeypatch):
             "journals_dir: journal_logs\n"
         )
         Path("templates").mkdir()
-        Path("templates/sqf_fix.md").write_text(
-            "---\ntrailers:\n---\nbody\n"
-        )
+        Path("templates/sqf_fix.md").write_text("---\ntrailers:\n---\nbody\n")
 
         orig_mkdir = Path.mkdir
 
