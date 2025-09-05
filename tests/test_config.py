@@ -30,6 +30,18 @@ def test_valid_config_allows_run():
         assert result.exit_code == 0
 
 
+def test_extra_key_is_ignored():
+    with runner.isolated_filesystem():
+        _write(
+            "journals_dir: logs\n"
+            "trailer_keys: [fix]\n"
+            "summary_format: 'x'\n"
+            "extra: 1\n"
+        )
+        result = runner.invoke(cli.app, ["hello"])
+        assert result.exit_code == 0
+
+
 def test_missing_key_shows_example():
     with runner.isolated_filesystem():
         _write("trailer_keys: [fix]\n" "summary_format: 'x'\n")

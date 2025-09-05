@@ -11,6 +11,22 @@ The CLI offers a few flags in addition to its subcommands:
 - `--show-completion` prints the completion script to standard output.
 - `--help` displays usage information for the selected command.
 
+## Configuration
+
+Settings are read from `.squirrelfocus/config.yaml`.
+
+Required keys:
+
+- `journals_dir` (str) journal directory.
+
+Optional keys:
+
+- `trailer_keys` (list[str]) commit trailer names.
+- `summary_format` (str) template for previews.
+
+Extra keys are ignored. A missing or malformed `journals_dir`
+causes an error.
+
 ## init
 
 Set up the current directory for SquirrelFocus.
