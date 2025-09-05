@@ -10,13 +10,7 @@ import sys
 import openai
 import typer
 
-try:  # optional
-    import yaml
-
-    HAVE_YAML = True
-except Exception:  # pragma: no cover
-    yaml = None
-    HAVE_YAML = False
+from . import config as conf
 
 app = typer.Typer(
     help=(
@@ -26,23 +20,18 @@ app = typer.Typer(
     )
 )
 
+
+@app.callback(invoke_without_command=True)
+def _startup(_: typer.Context) -> None:
+    conf.validate(conf.read_cfg())
+
+
+load_cfg = conf.load_cfg
+
 LOG_DIR = Path.home() / ".squirrelfocus"
 LOG_FILE = LOG_DIR / "acornlog.txt"
 _BASE_PATH = Path(__file__).resolve().parents[1]
 PROMPT_FILE = _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
-
-CFG_PATH = Path(".squirrelfocus") / "config.yaml"
-DEF_CFG = {
-    "journals_dir": "journal_logs",
-    "trailer_keys": ["fix", "why", "change", "proof", "ref"],
-    "summary_format": (
-        "### CI Triage\n"
-        "- **Fix:** {{fix}}\n"
-        "- **Why:** {{why}}\n"
-        "- **Change:** {{change}}\n"
-        "- **Proof:** {{proof}}\n"
-    ),
-}
 
 
 def load_prompt() -> str:
@@ -53,20 +42,6 @@ def load_prompt() -> str:
 def ensure_log_dir() -> None:
     """Create the log directory if it does not exist."""
     LOG_DIR.mkdir(parents=True, exist_ok=True)
-
-
-def load_cfg() -> dict:
-    """Return configuration merged with defaults."""
-    if HAVE_YAML and CFG_PATH.exists():
-        try:
-            with CFG_PATH.open("r", encoding="utf-8") as fh:
-                data = yaml.safe_load(fh) or {}
-            out = dict(DEF_CFG)
-            out.update({k: v for k, v in data.items() if v is not None})
-            return out
-        except Exception:
-            pass
-    return dict(DEF_CFG)
 
 
 def slugify(text: str) -> str:
@@ -92,32 +67,28 @@ def init(
         "journal_logs", "--journals-dir", help="Journal directory."
     ),
 ) -> None:
-    """Guided setup.
-
-    Options:
-      --with-workflows    Copy CI workflow.
-      --with-hook         Run install_hooks.sh (Unix) or install_hooks.ps1
-                          (Windows).
-      --force             Allow overwrites.
-      --journals-dir TEXT  Journal directory name.
-    """
+    """Guided setup for configuration files and journal directory."""
     created: list[Path] = []
 
     cfg_src = _BASE_PATH / ".squirrelfocus" / "config.yaml"
-    cfg_dst = CFG_PATH
+    cfg_dst = conf.CFG_PATH
     if force or not cfg_dst.exists():
         cfg_dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(cfg_src, cfg_dst)
         created.append(cfg_dst)
 
-    cfg = load_cfg()
-    cfg["journals_dir"] = journals_dir
-    if HAVE_YAML:
+    data = load_cfg()
+    data["journals_dir"] = journals_dir
+    if conf.HAVE_YAML:
         cfg_dst.write_text(
-            yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8"
+            conf.yaml.safe_dump(data, sort_keys=False),
+            encoding="utf-8",
         )
     else:
-        cfg_dst.write_text(f"journals_dir: {journals_dir}\n", encoding="utf-8")
+        cfg_dst.write_text(
+            f"journals_dir: {journals_dir}\n",
+            encoding="utf-8",
+        )
 
     jdir = Path(journals_dir)
     if not jdir.exists():
@@ -165,6 +136,8 @@ def init(
 
     for path in created:
         typer.echo(f"created {path}")
+    if not created:
+        typer.echo("No changes.")
 
 
 @app.command()
@@ -206,8 +179,8 @@ def new(
         if val:
             fm["trailers"][key] = val
 
-    if HAVE_YAML:
-        fm_text = yaml.safe_dump(fm, sort_keys=False)
+    if conf.HAVE_YAML:
+        fm_text = conf.yaml.safe_dump(fm, sort_keys=False)
     else:
         lines = ["trailers:"]
         for k, v in fm["trailers"].items():
@@ -225,12 +198,15 @@ def preview() -> None:
     script = Path("scripts") / "sqf_emit.py"
     if not script.exists():
         typer.echo("No emitter script found.")
-        raise typer.Exit()
+        raise typer.Exit(code=1)
     result = subprocess.run(
         [sys.executable, str(script), "summary"],
         capture_output=True,
         text=True,
     )
+    if result.returncode != 0:
+        typer.echo(result.stderr.strip() or "Emitter failed.")
+        raise typer.Exit(code=result.returncode)
     msg = result.stdout.strip()
     if msg:
         typer.echo(msg)
@@ -256,7 +232,7 @@ def doctor() -> None:
         typer.echo("pyyaml: present")
     except Exception:
         typer.echo("pyyaml: missing (pip install pyyaml)")
-    if CFG_PATH.exists():
+    if conf.CFG_PATH.exists():
         typer.echo("config: ok")
     else:
         typer.echo("config: missing (run 'sf init')")
@@ -279,8 +255,8 @@ def doctor() -> None:
         typer.echo("commit hook: ok")
     else:
         typer.echo(
-            "commit hook: missing (run 'scripts/install_hooks.sh' on Unix or "
-            "'scripts/install_hooks.ps1' on Windows)"
+            "commit hook: missing (run 'scripts/install_hooks.sh' on "
+            "Unix or 'scripts/install_hooks.ps1' on Windows)"
         )
         fail = True
     raise typer.Exit(code=1 if fail else 0)
@@ -292,6 +268,10 @@ def report() -> None:
     cfg = load_cfg()
     jdir = Path(cfg.get("journals_dir", "journal_logs"))
     cutoff = datetime.now()
+    if not jdir.exists():
+        typer.echo("No journal entries found.")
+        raise typer.Exit(code=1)
+    found = False
     for path in sorted(jdir.glob("**/*.md")):
         date_str = path.stem[:10]
         if len(date_str) != 10 or date_str[4] != "-" or date_str[7] != "-":
@@ -302,6 +282,10 @@ def report() -> None:
             continue
         if dt < cutoff:
             typer.echo(str(path))
+            found = True
+    if not found:
+        typer.echo("No journal entries found.")
+        raise typer.Exit(code=1)
 
 
 @app.command()
