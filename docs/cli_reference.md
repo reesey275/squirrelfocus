@@ -38,11 +38,17 @@ poetry run sf new --fix bug --why "to reproduce"
 
 ## preview
 
-Render the CI summary for the latest journal entry.
+Render the latest journal entry. The default format is `summary`. Supported
+formats are listed in `PREVIEW_FORMATS`.
 
 ```bash
-poetry run sf preview
+poetry run sf preview --format summary
+poetry run sf preview --format trailers
 ```
+
+Options:
+
+- `--format FORMAT` choose output type (`PREVIEW_FORMATS`; default `summary`).
 
 ## doctor
 

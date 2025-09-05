@@ -32,6 +32,7 @@ LOG_DIR = Path.home() / ".squirrelfocus"
 LOG_FILE = LOG_DIR / "acornlog.txt"
 _BASE_PATH = Path(__file__).resolve().parents[1]
 PROMPT_FILE = _BASE_PATH / "codex" / "prompts" / "work_item_generator.md"
+PREVIEW_FORMATS = ("summary", "trailers")
 
 
 def load_prompt() -> str:
@@ -193,14 +194,24 @@ def new(
 
 
 @app.command()
-def preview() -> None:
-    """Render the CI summary for the latest entry."""
+def preview(
+    fmt: str = typer.Option(
+        "summary",
+        "--format",
+        help=f"Output format: {' or '.join(PREVIEW_FORMATS)}.",
+    ),
+) -> None:
+    """Render the latest journal entry in the chosen format."""
+    if fmt not in PREVIEW_FORMATS:
+        raise typer.BadParameter(
+            f"Format must be one of: {' or '.join(PREVIEW_FORMATS)}."
+        )
     script = Path("scripts") / "sqf_emit.py"
     if not script.exists():
         typer.echo("No emitter script found.")
         raise typer.Exit(code=1)
     result = subprocess.run(
-        [sys.executable, str(script), "summary"],
+        [sys.executable, str(script), fmt],
         capture_output=True,
         text=True,
     )
