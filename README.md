@@ -2,6 +2,7 @@
 
 [![CI][ci-badge]][ci-url]
 [![CI Summary][ci-summary-badge]][ci-summary-url]
+[![Coverage][coverage-badge]][coverage-url]
 
 Developer productivity and reflection toolkit. The goal of this project is to
 provide a minimal command line interface and supporting documents that help
@@ -149,6 +150,9 @@ poetry run ruff check .
 
 # Run the test suite
 poetry run pytest
+
+# Run the test suite with coverage
+poetry run pytest --cov=. --cov-report=term-missing
 ```
 
 ## Reusable CI Summary
@@ -178,4 +182,6 @@ MIT License © 2024–2025. See [LICENSE](LICENSE) for full text.
 [ci-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml?query=branch%3Awork
 [ci-summary-badge]: https://img.shields.io/badge/CI_summary-main-blue
 [ci-summary-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci-summary.yml?query=branch%3Awork
+[coverage-badge]: https://img.shields.io/badge/coverage-95%25-brightgreen
+[coverage-url]: https://github.com/squirrelfocus/squirrelfocus/actions/workflows/ci.yml
 

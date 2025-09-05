@@ -102,10 +102,15 @@ jobs:
           poetry run ruff check .
           poetry run black --check .
 
+      - name: Run type checks
+        if: steps.poetry.outputs.poetry_available == '1'
+        timeout-minutes: 15
+        run: poetry run mypy .
+
       - name: Run tests
         if: steps.poetry.outputs.poetry_available == '1'
         timeout-minutes: 15
-        run: poetry run pytest -q
+        run: poetry run pytest --cov=. --cov-report=term-missing
 
       - name: Fallback without Poetry (non-fatal)
         if: steps.poetry.outputs.poetry_available != '1'
