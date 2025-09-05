@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 import openai
+import click
 import typer
 
 from . import config as conf
@@ -193,14 +194,21 @@ def new(
 
 
 @app.command()
-def preview() -> None:
-    """Render the CI summary for the latest entry."""
+def preview(
+    fmt: str = typer.Option(
+        "summary",
+        "--format",
+        click_type=click.Choice(["summary", "trailers"]),
+        help="Output format: 'summary' or 'trailers'.",
+    ),
+) -> None:
+    """Render the latest journal entry in the chosen format."""
     script = Path("scripts") / "sqf_emit.py"
     if not script.exists():
         typer.echo("No emitter script found.")
         raise typer.Exit(code=1)
     result = subprocess.run(
-        [sys.executable, str(script), "summary"],
+        [sys.executable, str(script), fmt],
         capture_output=True,
         text=True,
     )

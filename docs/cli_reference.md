@@ -38,11 +38,16 @@ poetry run sf new --fix bug --why "to reproduce"
 
 ## preview
 
-Render the CI summary for the latest journal entry.
+Render the latest journal entry in the selected format.
 
 ```bash
-poetry run sf preview
+poetry run sf preview --format summary
+poetry run sf preview --format trailers
 ```
+
+Options:
+
+- `--format [summary|trailers]` choose output type.
 
 ## doctor
 
