@@ -31,3 +31,10 @@ jobs:
           else
             echo "No summary available" >> $GITHUB_STEP_SUMMARY
           fi
+      - name: Comment CI Summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const post = require('./scripts/post_triage_comment.js');
+            await post({github, context, core});
