@@ -34,19 +34,10 @@ def test_new_missing_template(monkeypatch):
 
         def fake_exists(self):
             if self.name == "sqf_fix.md":
-                return True
+                return False
             return orig_exists(self)
 
         monkeypatch.setattr(Path, "exists", fake_exists)
-
-        orig_read_text = Path.read_text
-
-        def fake_read_text(self, *args, **kwargs):
-            if self.name == "sqf_fix.md":
-                raise FileNotFoundError("template missing")
-            return orig_read_text(self, *args, **kwargs)
-
-        monkeypatch.setattr(Path, "read_text", fake_read_text)
 
         result = runner.invoke(cli.app, ["new", "--fix", "bug"])
         assert result.exit_code != 0
