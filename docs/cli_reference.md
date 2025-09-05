@@ -54,6 +54,14 @@ trailers.
 poetry run sf new --fix bug --why "to reproduce"
 ```
 
+Options:
+
+- `--fix TEXT` describe the bug or issue addressed.
+- `--why TEXT` explain the motivation for the change.
+- `--change TEXT` summarize what was modified.
+- `--proof TEXT` describe how the change was verified.
+- `--ref TEXT` link to related issues or resources.
+
 ## preview
 
 Render the latest journal entry. The default format is `summary`. Supported
