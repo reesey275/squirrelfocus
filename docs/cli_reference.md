@@ -56,11 +56,11 @@ poetry run sf new --fix bug --why "to reproduce"
 
 Options:
 
-- `--fix TEXT` describe the bug or issue addressed.
-- `--why TEXT` explain the motivation for the change.
-- `--change TEXT` summarize what was modified.
-- `--proof TEXT` describe how the change was verified.
-- `--ref TEXT` link to related issues or resources.
+- `--fix TEXT` Describe the bug or issue addressed.
+- `--why TEXT` Explain the motivation for the change.
+- `--change TEXT` Summarize what was modified.
+- `--proof TEXT` Describe how the change was verified.
+- `--ref TEXT` Link to related issues or resources.
 
 ## preview
 
