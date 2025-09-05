@@ -2,6 +2,11 @@ from pathlib import Path
 import os
 import subprocess
 import sys
+import runpy
+import pytest
+
+pytest.importorskip("typer.testing")
+yaml = pytest.importorskip("yaml")
 from typer.testing import CliRunner
 
 runner = CliRunner()
@@ -46,7 +51,7 @@ def test_emit_malformed_frontmatter():
         assert result.stdout.strip() == ""
 
 
-def test_emit_multiple_entries_fallback():
+def test_emit_multiple_entries_fallback(monkeypatch, capsys):
     with runner.isolated_filesystem():
         make_basic()
         jdir = Path("journal_logs")
@@ -61,17 +66,10 @@ def test_emit_multiple_entries_fallback():
         )
         os.utime(older, (1, 1))
         os.utime(newer, (2, 2))
-        fake = Path("fake")
-        (fake / "yaml").mkdir(parents=True)
-        Path(fake / "yaml/__init__.py").write_text(
-            "raise RuntimeError('no yaml')\n"
-        )
-        env = dict(os.environ, PYTHONPATH=str(fake))
-        result = subprocess.run(
-            [sys.executable, "scripts/sqf_emit.py", "trailers"],
-            env=env,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        assert result.stdout.strip() == "fix: new\nwhy: z"
+        def boom(*_a, **_k):
+            raise RuntimeError("no yaml")
+        monkeypatch.setattr(yaml, "safe_load", boom)
+        monkeypatch.setattr(sys, "argv", ["sqf_emit.py", "trailers"])
+        runpy.run_path("scripts/sqf_emit.py", run_name="__main__")
+        out = capsys.readouterr().out
+        assert out.strip() == "fix: new\nwhy: z"
