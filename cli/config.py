@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any  # for optional yaml support
 
 import typer
 
-yaml: Any
 try:  # optional
-    import yaml
+    import yaml as _yaml
 
+    yaml: Any = _yaml
     HAVE_YAML = True
 except Exception:  # pragma: no cover
     yaml = None
