@@ -161,13 +161,14 @@ def new(
     path = jdir / f"{today}-{slug}.md"
 
     tpl_path = Path("templates") / "sqf_fix.md"
+    if not tpl_path.exists():
+        raise FileNotFoundError("template missing")
     body = ""
-    if tpl_path.exists():
-        text = tpl_path.read_text(encoding="utf-8")
-        if text.startswith("---"):
-            body = text.split("---", 2)[2].lstrip()
-        else:
-            body = text
+    text = tpl_path.read_text(encoding="utf-8")
+    if text.startswith("---"):
+        body = text.split("---", 2)[2].lstrip()
+    else:
+        body = text
 
     fm = {"trailers": {}}
     for key, val in {
