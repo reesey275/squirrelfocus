@@ -75,9 +75,8 @@ def test_comment_with_label_and_summary(tmp_path: Path):
     assert proc.returncode == 0
 
 
-def test_skip_with_label_missing_summary(tmp_path: Path):
-    root = Path(__file__).resolve().parents[1]
     mod = root / "scripts" / "post_triage_comment.js"
+    # Intentionally do not create the summary file to test the missing summary scenario.
     mod_path = json.dumps(str(mod))
     # Pass a non-existent summary file to simulate the missing summary case.
     sum_path = json.dumps(str(tmp_path / "summary.md"))
