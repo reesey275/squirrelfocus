@@ -5,6 +5,7 @@ from typing import Any
 
 import typer
 
+yaml: Any
 try:  # optional
     import yaml
 
