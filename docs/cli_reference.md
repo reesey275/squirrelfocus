@@ -17,15 +17,17 @@ Settings are read from `.squirrelfocus/config.yaml`.
 
 Required keys:
 
-- `journals_dir` (str) journal directory.
+- `journals_dir` (str): path for journal entries.
 
 Optional keys:
 
-- `trailer_keys` (list[str]) commit trailer names.
-- `summary_format` (str) template for previews.
+- `trailer_keys` (list[str]): commit trailer names. Defaults to
+  `[fix, why, change, proof, ref]`. Elements must be strings.
+- `summary_format` (str): preview template. Defaults to a multi-line
+  summary.
 
-Extra keys are ignored. A missing or malformed `journals_dir`
-causes an error.
+Unknown keys are ignored. Missing or malformed keys show an example
+with the expected type.
 
 ## init
 
