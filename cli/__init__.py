@@ -8,7 +8,6 @@ import subprocess
 import sys
 
 import openai
-import click
 import typer
 
 from . import config as conf
@@ -199,11 +198,14 @@ def preview(
     fmt: str = typer.Option(
         "summary",
         "--format",
-        click_type=click.Choice(PREVIEW_FORMATS),
         help=f"Output format: {' or '.join(PREVIEW_FORMATS)}.",
     ),
 ) -> None:
     """Render the latest journal entry in the chosen format."""
+    if fmt not in PREVIEW_FORMATS:
+        raise typer.BadParameter(
+            f"Format must be one of: {' or '.join(PREVIEW_FORMATS)}."
+        )
     script = Path("scripts") / "sqf_emit.py"
     if not script.exists():
         typer.echo("No emitter script found.")

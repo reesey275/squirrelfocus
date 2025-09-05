@@ -65,4 +65,4 @@ def test_preview_outputs_trailers():
 def test_preview_invalid_format():
     result = runner.invoke(cli.app, ["preview", "--format", "bad"])
     assert result.exit_code != 0
-    assert "Invalid value for '--format'" in result.output
+    assert "Format must be one of" in result.output
