@@ -79,6 +79,7 @@ def test_skip_with_label_missing_summary(tmp_path: Path):
     root = Path(__file__).resolve().parents[1]
     mod = root / "scripts" / "post_triage_comment.js"
     summ = tmp_path / "summary.md"
+    # Intentionally do not create the summary file to test the missing summary scenario.
     mod_path = json.dumps(str(mod))
     sum_path = json.dumps(str(summ))
     tpl = Template(
