@@ -23,7 +23,8 @@ jobs:
         run: |
           line="- $(date -u +%F) — $(python3 scripts/sqf_emit.py \
             trailers | tr '\n' '; ')"
-          echo "$line" >> MILESTONE_LOG.md
+          grep -Fxq "$line" MILESTONE_LOG.md || \
+            echo "$line" >> MILESTONE_LOG.md
       - name: Commit log
         timeout-minutes: 15
         run: |
